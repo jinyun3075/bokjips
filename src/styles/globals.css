@@ -20,13 +20,6 @@ button {
   cursor: pointer;
 }
 
-/* 반응형 가로폭 */
-.max-width {
-  width: 1224px;
-  max-width: calc(100% - 40px);
-  margin: 0 auto;
-}
-
 /* 접근성을 위한 텍스트 숨김 */
 .a11y-hidden {
   overflow: hidden;

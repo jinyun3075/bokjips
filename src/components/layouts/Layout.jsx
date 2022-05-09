@@ -7,7 +7,7 @@ export const Layout = ({ children }) => {
     <>
         <Title title="복지편살" />
         <Header />
-            <section className="max-width">{children}</section>
+            <section>{children}</section>
         <Footer />
     </>
     );
