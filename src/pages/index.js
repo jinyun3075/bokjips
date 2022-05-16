@@ -16,6 +16,6 @@ export default function Home() {
 }
 
 const Wrap = styled.main`
-  margin: 0 auto;
+  margin: 25px auto;
   max-width: 1024px;
 `;
