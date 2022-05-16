@@ -1,12 +1,11 @@
 package com.bokjips.server.domain.corp.entity;
 
 import com.bokjips.server.util.entity.BaseEntity;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
@@ -14,12 +13,30 @@ import java.util.UUID;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@Getter
 public class Corp extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "id", nullable = false)
+    @Column(nullable = false)
     private UUID id;
 
-    @Column(name = "name", unique = true)
+    @Column(unique = true, nullable = false)
     private String name;
+
+    @Column(nullable = false)
+    private String site;
+
+    @Column(nullable = false)
+    private String career;
+
+    @ElementCollection
+    @CollectionTable(name = "category")
+    private List<String> category;
+
+    @Column(nullable = false)
+    private boolean stock;
+
+    private Long good;
+
+    private String image;
 }
