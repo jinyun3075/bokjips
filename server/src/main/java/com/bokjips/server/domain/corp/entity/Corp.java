@@ -17,7 +17,7 @@ import java.util.UUID;
 public class Corp extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(nullable = false)
+    @Column(columnDefinition = "BINARY(16)")
     private UUID id;
 
     @Column(unique = true, nullable = false)

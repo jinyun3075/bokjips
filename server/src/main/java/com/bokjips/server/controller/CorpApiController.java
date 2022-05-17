@@ -9,6 +9,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.UUID;
+
 @RestController
 @RequestMapping("/corp")
 @Log4j2
@@ -20,5 +22,10 @@ public class CorpApiController {
     @PostMapping("/insert")
     public ResponseEntity<CorpResponseDto> insertCorp(@RequestBody CorpRequestDto dto){
         return new ResponseEntity<>(corpService.insertCorp(dto), HttpStatus.OK);
+    }
+
+    @GetMapping("/select/{corp_id}")
+    public ResponseEntity<CorpResponseDto> selectCorp(@PathVariable UUID corp_id) {
+        return new ResponseEntity<>(corpService.selectCorp(corp_id),HttpStatus.OK);
     }
 }

@@ -4,9 +4,12 @@ import com.bokjips.server.domain.corp.dto.CorpRequestDto;
 import com.bokjips.server.domain.corp.dto.CorpResponseDto;
 import com.bokjips.server.domain.corp.entity.Corp;
 
+import java.util.UUID;
+
 public interface CorpService {
     public CorpResponseDto insertCorp(CorpRequestDto dto);
 
+    public CorpResponseDto selectCorp(UUID corp_id);
     default Corp dtoToEntity(CorpRequestDto dto){
         return Corp.builder()
                 .name(dto.getName())
