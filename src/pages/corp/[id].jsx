@@ -2,6 +2,7 @@ import styled from '@emotion/styled';
 import { COLOR } from '../../constants'
 
 import InfoBanner from '../../components/company/InfoBanner';
+import Detail from '../../components/company/Detail';
 
 export default function Home() {
   return (
@@ -13,14 +14,43 @@ export default function Home() {
       good={23}
       category="IT/기술"
     />
-    <Wrap>
-      contents
-    </Wrap>
+    <Contents>
+      <Details>
+        <Detail
+          kind="condition"
+        />
+        <Detail
+          kind="worksupport"
+        />
+        <Detail
+          kind="support"
+        />
+        <Detail
+          kind="environment"
+        />
+        <Detail
+          kind="etc"
+        />
+      </Details>
+    </Contents>
   </>
   )
 }
 
-const Wrap = styled.main`
-  margin: 25px auto;
+const Contents = styled.main`
+  margin: 40px auto;
   max-width: 1024px;
+  @media (max-width: 1024px) {
+    padding: 0 30px;
+  } ;
+`;
+
+const Details = styled.section`
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 30px;
+  @media (max-width: 1024px) {
+    display: flex;
+    flex-direction: column;
+  } ;
 `;
