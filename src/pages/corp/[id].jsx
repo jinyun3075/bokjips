@@ -32,6 +32,10 @@ export default function Home() {
           kind="etc"
         />
       </Details>
+      <ReportBtn type="button">
+      <img src="/images/icons/msg-exclam.svg" />
+        오류 수정 요청
+      </ReportBtn>
     </Contents>
   </>
   )
@@ -53,4 +57,25 @@ const Details = styled.section`
     display: flex;
     flex-direction: column;
   } ;
+`;
+
+const ReportBtn = styled.button`
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 30px auto;
+  padding: 7px 25px;
+  background-color: #fff;
+  color: #FF3D00;
+  font-size: 15px;
+  font-weight: 600;
+  border: 2px solid #FF3D00;
+  border-radius: 20px;
+  opacity: .5;
+  img {
+    width: 17px;
+  }
+  &:hover {
+    opacity: 1;
+  }
 `;
