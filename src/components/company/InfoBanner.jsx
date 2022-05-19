@@ -1,5 +1,9 @@
 import styled from '@emotion/styled';
-import { COLOR } from '../../constants'
+import { COLOR } from '../../constants';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faHeart as faHeartS } from '@fortawesome/free-solid-svg-icons'
+import { faHeart as faHeartR } from '@fortawesome/free-regular-svg-icons'
+
 
 export default function InfoBanner({
     stock, category, logo, name, good
@@ -22,8 +26,9 @@ export default function InfoBanner({
                 <Good>
                     <GoodBtn
                         type="button"
-                        onClick={() => {alert("좋아요 클릭")}}>
-                        {good}
+                        onClick={() => {alert("좋아요 클릭")}}
+                    >
+                    <FontAwesomeIcon icon={faHeartR} /> {good}
                     </GoodBtn>
                 </Good>
             </Wrap>
