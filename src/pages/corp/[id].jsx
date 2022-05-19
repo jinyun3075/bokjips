@@ -11,8 +11,9 @@ export default function Home() {
       logo="https://media-exp1.licdn.com/dms/image/C560BAQFXeEWM-FoApw/company-logo_200_200/0/1519881499181?e=2147483647&v=beta&t=KM_FX6hrlfp-OCrbSa6qrckrxs_znCgT6oyrxEP_0RI"
       name="우아한형제들"
       stock={false}
-      good={23}
-      category="IT/기술"
+      goodCount={23}
+      goodcheck={false}
+      category="IT/플랫폼"
     />
     <Contents>
       <Details>

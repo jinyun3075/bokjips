@@ -6,7 +6,7 @@ import { faHeart as faHeartR } from '@fortawesome/free-regular-svg-icons'
 
 
 export default function InfoBanner({
-    stock, category, logo, name, good
+    stock, category, logo, name, goodCount, goodCheck
 }) {
     return (
         <Container>
@@ -28,7 +28,7 @@ export default function InfoBanner({
                         type="button"
                         onClick={() => {alert("좋아요 클릭")}}
                     >
-                    <FontAwesomeIcon icon={faHeartR} /> {good}
+                    <FontAwesomeIcon icon={faHeartR} /> {goodCount}
                     </GoodBtn>
                 </Good>
             </Wrap>
