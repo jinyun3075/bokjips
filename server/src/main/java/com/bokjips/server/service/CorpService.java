@@ -4,12 +4,17 @@ import com.bokjips.server.domain.corp.dto.CorpRequestDto;
 import com.bokjips.server.domain.corp.dto.CorpResponseDto;
 import com.bokjips.server.domain.corp.entity.Corp;
 
+import java.io.IOException;
 import java.util.UUID;
 
 public interface CorpService {
-    public CorpResponseDto insertCorp(CorpRequestDto dto);
+    public CorpResponseDto insertCorp(CorpRequestDto dto) throws IOException;
 
-    public CorpResponseDto selectCorp(UUID corp_id);
+    public CorpResponseDto selectCorp(UUID corp_id) throws IOException;
+
+    public CorpResponseDto updateCorp(UUID corp_id, CorpRequestDto dto) throws IOException;
+
+    public String deleteCorp(UUID corp_id) throws IOException;
     default Corp dtoToEntity(CorpRequestDto dto){
         return Corp.builder()
                 .name(dto.getName())

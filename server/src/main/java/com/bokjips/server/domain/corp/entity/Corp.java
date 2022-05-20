@@ -1,5 +1,6 @@
 package com.bokjips.server.domain.corp.entity;
 
+import com.bokjips.server.domain.corp.dto.CorpRequestDto;
 import com.bokjips.server.util.entity.BaseEntity;
 import lombok.*;
 
@@ -39,4 +40,13 @@ public class Corp extends BaseEntity {
     private Long good;
 
     private String image;
+
+    public void update(CorpRequestDto dto){
+        this.name = dto.getName();
+        this.site = dto.getSite();
+        this.career = dto.getCareer();
+        this.category = dto.getCategory();
+        this.stock = dto.isStock();
+        this.image = dto.getImage();
+    }
 }

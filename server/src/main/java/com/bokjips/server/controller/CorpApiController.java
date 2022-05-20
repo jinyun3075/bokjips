@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.util.UUID;
 
 @RestController
@@ -20,12 +21,22 @@ public class CorpApiController {
     private final CorpService corpService;
 
     @PostMapping("/insert")
-    public ResponseEntity<CorpResponseDto> insertCorp(@RequestBody CorpRequestDto dto){
+    public ResponseEntity<CorpResponseDto> insertCorp(@RequestBody CorpRequestDto dto) throws IOException {
         return new ResponseEntity<>(corpService.insertCorp(dto), HttpStatus.OK);
     }
 
     @GetMapping("/select/{corp_id}")
-    public ResponseEntity<CorpResponseDto> selectCorp(@PathVariable UUID corp_id) {
+    public ResponseEntity<CorpResponseDto> selectCorp(@PathVariable UUID corp_id) throws IOException{
         return new ResponseEntity<>(corpService.selectCorp(corp_id),HttpStatus.OK);
+    }
+
+    @PutMapping("/update/{corp_id}")
+    public ResponseEntity<CorpResponseDto> updateCorp(@PathVariable UUID corp_id, @RequestBody CorpRequestDto dto) throws IOException{
+        return new ResponseEntity<>(corpService.updateCorp(corp_id,dto),HttpStatus.OK);
+    }
+
+    @DeleteMapping("/delete/{corp_id}")
+    public ResponseEntity<String> deleteCorp(@PathVariable UUID corp_id) throws IOException {
+        return new ResponseEntity<>(corpService.deleteCorp(corp_id),HttpStatus.OK);
     }
 }
