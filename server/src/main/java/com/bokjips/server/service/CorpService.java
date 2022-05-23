@@ -3,6 +3,9 @@ package com.bokjips.server.service;
 import com.bokjips.server.domain.corp.dto.CorpRequestDto;
 import com.bokjips.server.domain.corp.dto.CorpResponseDto;
 import com.bokjips.server.domain.corp.entity.Corp;
+import com.bokjips.server.domain.welfare.dto.WelfareRequestDto;
+import com.bokjips.server.domain.welfare.dto.WelfareResponseDto;
+import com.bokjips.server.domain.welfare.entity.Welfare;
 
 import java.io.IOException;
 import java.util.UUID;
@@ -15,7 +18,7 @@ public interface CorpService {
     public CorpResponseDto updateCorp(UUID corp_id, CorpRequestDto dto) throws IOException;
 
     public String deleteCorp(UUID corp_id) throws IOException;
-    default Corp dtoToEntity(CorpRequestDto dto){
+    default Corp dtoToCorpEntity(CorpRequestDto dto){
         return Corp.builder()
                 .name(dto.getName())
                 .site(dto.getSite())
@@ -27,7 +30,7 @@ public interface CorpService {
                 .build();
     }
 
-    default CorpResponseDto entityToDto(Corp entity) {
+    default CorpResponseDto corpEntityToDto(Corp entity) {
         return CorpResponseDto.builder()
                 .corp_id(entity.getId())
                 .career(entity.getCareer())
@@ -39,6 +42,15 @@ public interface CorpService {
                 .regDate(entity.getRegDate())
                 .site(entity.getSite())
                 .stock(entity.isStock())
+                .build();
+    }
+
+    default Welfare dtoToWelfareEntity(Corp corpEntity,WelfareRequestDto dto) {
+        return Welfare.builder()
+                .title(dto.getTitle())
+                .subtitle(dto.getSubTitle())
+                .options(dto.getOptions())
+                .corp(corpEntity)
                 .build();
     }
 }
