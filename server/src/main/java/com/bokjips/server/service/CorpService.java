@@ -8,6 +8,8 @@ import com.bokjips.server.domain.welfare.dto.WelfareResponseDto;
 import com.bokjips.server.domain.welfare.entity.Welfare;
 
 import java.io.IOException;
+import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 public interface CorpService {
@@ -30,7 +32,7 @@ public interface CorpService {
                 .build();
     }
 
-    default CorpResponseDto corpEntityToDto(Corp entity) {
+    default CorpResponseDto corpEntityToDto(Corp entity, Map<String, List<WelfareResponseDto>> welfareList) {
         return CorpResponseDto.builder()
                 .corp_id(entity.getId())
                 .career(entity.getCareer())
@@ -42,6 +44,7 @@ public interface CorpService {
                 .regDate(entity.getRegDate())
                 .site(entity.getSite())
                 .stock(entity.isStock())
+                .welfareList(welfareList)
                 .build();
     }
 

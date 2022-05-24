@@ -27,53 +27,47 @@ public class CorpServiceImpl implements CorpService {
     public CorpResponseDto insertCorp(CorpRequestDto dto) throws IOException {
         Corp entity = corpRepository.save(dtoToCorpEntity(dto));
         Map<String, List<WelfareResponseDto>> welfareList = new HashMap<>();
-        log.info(dto.getWelfareList());
-        if(dto.getWelfareList().isEmpty()) {
-            return null;
-        }
-        for(WelfareRequestDto welfare : dto.getWelfareList()) {
-            welfareList.put(welfare.getTitle(), new ArrayList<>());
+
+        for (WelfareRequestDto welfare : dto.getWelfareList()) {
             welfareRepository.save(dtoToWelfareEntity(entity, welfare));
         }
 
-        for(WelfareRequestDto welfare : dto.getWelfareList()) {
-            welfareList.get(welfare.getTitle()).add(new WelfareResponseDto());
+        for (WelfareRequestDto welfare : dto.getWelfareList()) {
+            String key = welfare.getTitle();
+            List<WelfareResponseDto> list = welfareList.getOrDefault(key, new ArrayList<>());
+            list.add(WelfareResponseDto.builder()
+                    .subTitle(welfare.getSubTitle())
+                    .options(welfare.getOptions()).build());
+            welfareList.put(key, list);
         }
 
-        for(String welfare: welfareList.keySet()) {
-                for(WelfareResponseDto welfareDto : welfareList.get(welfare)) {
-
-                }
-        }
-
-        log.info(welfareList);
-        CorpResponseDto response = corpEntityToDto(entity);
-        response.getWelfareList();
-        return corpEntityToDto(entity);
+        return corpEntityToDto(entity,welfareList);
     }
 
     @Override
-    public CorpResponseDto selectCorp(UUID corp_id) throws IOException{
+    public CorpResponseDto selectCorp(UUID corp_id) throws IOException {
         Optional<Corp> entity = corpRepository.findById(corp_id);
         log.info(entity);
-        if(!entity.isPresent()) {
+        if (!entity.isPresent()) {
             log.info("error");
             return null;
         }
-        return corpEntityToDto(entity.get());
+        return null;
+//        return corpEntityToDto(entity.get());
     }
 
     @Override
     public CorpResponseDto updateCorp(UUID Corp_id, CorpRequestDto dto) throws IOException {
         Optional<Corp> entity = corpRepository.findById(Corp_id);
         entity.get().update(dto);
-        return corpEntityToDto(corpRepository.save(entity.get()));
+//        return corpEntityToDto(corpRepository.save(entity.get()));
+        return null;
     }
 
     @Override
     public String deleteCorp(UUID corp_id) throws IOException {
         Optional<Corp> entity = corpRepository.findById(corp_id);
-        if(!entity.isPresent()) {
+        if (!entity.isPresent()) {
             log.info("error");
             return "삭제 실패";
         }
