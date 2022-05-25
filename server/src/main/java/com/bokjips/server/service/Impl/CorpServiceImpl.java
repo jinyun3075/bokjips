@@ -35,12 +35,12 @@ public class CorpServiceImpl implements CorpService {
     @Override
     public CorpResponseDto insertCorp(CorpRequestDto dto) throws IOException {
         Corp entity = corpRepository.save(dtoToCorpEntity(dto));
-        Map<String, List<WelfareResponseDto>> welfareList = new HashMap<>();
 
         for (WelfareRequestDto welfare : dto.getWelfareList()) {
             welfareRepository.save(dtoToWelfareEntity(entity, welfare));
         }
 
+        Map<String, List<WelfareResponseDto>> welfareList = new HashMap<>();
         for (WelfareRequestDto welfare : dto.getWelfareList()) {
             String key = welfare.getTitle();
             List<WelfareResponseDto> list = welfareList.getOrDefault(key, new ArrayList<>());
@@ -102,29 +102,29 @@ public class CorpServiceImpl implements CorpService {
 
     @Override
     public CorpResponseDto updateCorp(String Corp_id, CorpRequestDto dto) throws IOException {
-//        Optional<Corp> entity = corpRepository.findById(Corp_id);
-//        entity.get().update(dto);
-//
-//        List<Welfare> welfareList = welfareRepository.findByCorpId(Corp_id);
-//
-//        for(Welfare welfare : welfareList) {
-//            welfare.update(dto.getWelfareList());
-//        }
-//
-//        for (WelfareRequestDto welfare : dto.getWelfareList()) {
-//            welfareRepository.save(dtoToWelfareEntity(entity.get(), welfare));
-//        }
-//
-//        for (WelfareRequestDto welfare : dto.getWelfareList()) {
-//            String key = welfare.getTitle();
-//            List<WelfareResponseDto> list = welfareList.getOrDefault(key, new ArrayList<>());
-//            list.add(WelfareResponseDto.builder()
-//                    .subTitle(welfare.getSubTitle())
-//                    .options(welfare.getOptions()).build());
-//            welfareList.put(key, list);
-//        }
-////        return corpEntityToDto(corpRepository.save(entity.get()));
-        return null;
+        Optional<Corp> entity = corpRepository.findById(Corp_id);
+        entity.get().update(dto);
+
+        Long result = welfareRepository.deleteByCorpId(Corp_id);
+        if(result==0) {
+            return null;
+        }
+
+        for (WelfareRequestDto welfare : dto.getWelfareList()) {
+            welfareRepository.save(dtoToWelfareEntity(entity.get(), welfare));
+        }
+
+        Map<String, List<WelfareResponseDto>> welfareList = new HashMap<>();
+        for (WelfareRequestDto welfare : dto.getWelfareList()) {
+            String key = welfare.getTitle();
+            List<WelfareResponseDto> list = welfareList.getOrDefault(key, new ArrayList<>());
+            list.add(WelfareResponseDto.builder()
+                    .subTitle(welfare.getSubTitle())
+                    .options(welfare.getOptions()).build());
+            welfareList.put(key, list);
+        }
+
+        return corpEntityToDto(corpRepository.save(entity.get()),welfareList);
     }
 
     @Override
