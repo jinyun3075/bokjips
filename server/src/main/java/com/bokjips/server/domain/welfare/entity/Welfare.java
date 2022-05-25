@@ -1,6 +1,7 @@
 package com.bokjips.server.domain.welfare.entity;
 
 import com.bokjips.server.domain.corp.entity.Corp;
+import com.bokjips.server.domain.welfare.dto.WelfareRequestDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -34,4 +35,9 @@ public class Welfare {
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Corp corp;
 
+    public void update(WelfareRequestDto welfareRequestDto) {
+        this.title = welfareRequestDto.getTitle();
+        this.subtitle = welfareRequestDto.getSubTitle();
+        this.options = welfareRequestDto.getOptions();
+    }
 }

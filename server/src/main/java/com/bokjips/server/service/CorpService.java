@@ -6,6 +6,7 @@ import com.bokjips.server.domain.corp.entity.Corp;
 import com.bokjips.server.domain.welfare.dto.WelfareRequestDto;
 import com.bokjips.server.domain.welfare.dto.WelfareResponseDto;
 import com.bokjips.server.domain.welfare.entity.Welfare;
+import com.bokjips.server.util.dto.PageResponseDto;
 
 import java.io.IOException;
 import java.util.List;
@@ -13,13 +14,15 @@ import java.util.Map;
 import java.util.UUID;
 
 public interface CorpService {
-    public CorpResponseDto insertCorp(CorpRequestDto dto) throws IOException;
+    CorpResponseDto insertCorp(CorpRequestDto dto) throws IOException;
 
-    public CorpResponseDto selectCorp(String corp_id) throws IOException;
+    CorpResponseDto selectCorp(String corp_id) throws IOException;
 
-    public CorpResponseDto updateCorp(String corp_id, CorpRequestDto dto) throws IOException;
+    CorpResponseDto updateCorp(String corp_id, CorpRequestDto dto) throws IOException;
 
-    public String deleteCorp(String corp_id) throws IOException;
+    String deleteCorp(String corp_id) throws IOException;
+
+    PageResponseDto<CorpResponseDto,Corp> selectCorpList(Integer page, Integer size) throws IOException;
     default Corp dtoToCorpEntity(CorpRequestDto dto){
         return Corp.builder()
                 .id(UUID.randomUUID().toString())
@@ -46,6 +49,21 @@ public interface CorpService {
                 .site(entity.getSite())
                 .stock(entity.isStock())
                 .welfareList(welfareList)
+                .build();
+    }
+
+    default CorpResponseDto corpPageToDto(Corp entity) {
+        return CorpResponseDto.builder()
+                .corp_id(entity.getId())
+                .career(entity.getCareer())
+                .category(entity.getCategory())
+                .image(entity.getImage())
+                .good(entity.getGood())
+                .name(entity.getName())
+                .modDate(entity.getModDate())
+                .regDate(entity.getRegDate())
+                .site(entity.getSite())
+                .stock(entity.isStock())
                 .build();
     }
 

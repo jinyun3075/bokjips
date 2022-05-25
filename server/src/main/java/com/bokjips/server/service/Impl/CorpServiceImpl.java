@@ -9,17 +9,25 @@ import com.bokjips.server.domain.welfare.dto.WelfareResponseDto;
 import com.bokjips.server.domain.welfare.entity.Welfare;
 import com.bokjips.server.domain.welfare.repository.WelfareRepository;
 import com.bokjips.server.service.CorpService;
+import com.bokjips.server.util.dto.PageRequestDto;
+import com.bokjips.server.util.dto.PageResponseDto;
+import com.bokjips.server.util.module.PageModule;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.util.*;
+import java.util.function.Function;
 
 @Service
 @RequiredArgsConstructor
 @Log4j2
 public class CorpServiceImpl implements CorpService {
+
+    private final PageModule pageModule;
 
     private final CorpRepository corpRepository;
     private final WelfareRepository welfareRepository;
@@ -67,10 +75,55 @@ public class CorpServiceImpl implements CorpService {
     }
 
     @Override
+    public PageResponseDto<CorpResponseDto, Corp> selectCorpList(Integer page, Integer size) throws IOException {
+        PageRequestDto pageRequestDto = pageModule.makePage(page,size);
+
+        Page<Corp> entity = corpRepository.findAll(pageRequestDto.getPageable(Sort.by("good").descending()));
+
+
+        Function<Corp, CorpResponseDto> fn = (data -> corpPageToDto(data));
+        PageResponseDto<CorpResponseDto, Corp> pageResponseDto =new PageResponseDto<>(entity, fn);
+        log.info(pageResponseDto);
+        for(CorpResponseDto corp : pageResponseDto.dtoList) {
+            List<Welfare> welfareListEntity = welfareRepository.findByCorpId(corp.getCorp_id());
+            Map<String, List<WelfareResponseDto>> welfareList = new HashMap<>();
+            for(Welfare w : welfareListEntity) {
+                String key = w.getTitle();
+                List<WelfareResponseDto> list = welfareList.getOrDefault(key, new ArrayList<>());
+                list.add(WelfareResponseDto.builder()
+                        .subTitle(w.getSubtitle())
+                        .options(w.getOptions()).build());
+                welfareList.put(key, list);
+            }
+            corp.setWelfareList(welfareList);
+        }
+        return pageResponseDto;
+    }
+
+    @Override
     public CorpResponseDto updateCorp(String Corp_id, CorpRequestDto dto) throws IOException {
-        Optional<Corp> entity = corpRepository.findById(Corp_id);
-        entity.get().update(dto);
-//        return corpEntityToDto(corpRepository.save(entity.get()));
+//        Optional<Corp> entity = corpRepository.findById(Corp_id);
+//        entity.get().update(dto);
+//
+//        List<Welfare> welfareList = welfareRepository.findByCorpId(Corp_id);
+//
+//        for(Welfare welfare : welfareList) {
+//            welfare.update(dto.getWelfareList());
+//        }
+//
+//        for (WelfareRequestDto welfare : dto.getWelfareList()) {
+//            welfareRepository.save(dtoToWelfareEntity(entity.get(), welfare));
+//        }
+//
+//        for (WelfareRequestDto welfare : dto.getWelfareList()) {
+//            String key = welfare.getTitle();
+//            List<WelfareResponseDto> list = welfareList.getOrDefault(key, new ArrayList<>());
+//            list.add(WelfareResponseDto.builder()
+//                    .subTitle(welfare.getSubTitle())
+//                    .options(welfare.getOptions()).build());
+//            welfareList.put(key, list);
+//        }
+////        return corpEntityToDto(corpRepository.save(entity.get()));
         return null;
     }
 

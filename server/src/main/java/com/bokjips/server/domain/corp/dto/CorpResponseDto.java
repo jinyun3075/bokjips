@@ -4,6 +4,7 @@ import com.bokjips.server.domain.welfare.dto.WelfareResponseDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -22,7 +23,7 @@ public class CorpResponseDto {
     private final boolean stock;
     private final Long good;
     private final String image;
-    private final Map<String,List<WelfareResponseDto>> welfareList;
+    Map<String,List<WelfareResponseDto>> welfareList;
     private final LocalDateTime regDate;
     private final LocalDateTime modDate;
 }
