@@ -14,7 +14,7 @@ import java.util.UUID;
 @Builder
 @AllArgsConstructor
 public class CorpResponseDto {
-    private final UUID corp_id;
+    private final String corp_id;
     private final String name;
     private final String site;
     private final String career;

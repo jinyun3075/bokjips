@@ -15,13 +15,14 @@ import java.util.UUID;
 public interface CorpService {
     public CorpResponseDto insertCorp(CorpRequestDto dto) throws IOException;
 
-    public CorpResponseDto selectCorp(UUID corp_id) throws IOException;
+    public CorpResponseDto selectCorp(String corp_id) throws IOException;
 
-    public CorpResponseDto updateCorp(UUID corp_id, CorpRequestDto dto) throws IOException;
+    public CorpResponseDto updateCorp(String corp_id, CorpRequestDto dto) throws IOException;
 
-    public String deleteCorp(UUID corp_id) throws IOException;
+    public String deleteCorp(String corp_id) throws IOException;
     default Corp dtoToCorpEntity(CorpRequestDto dto){
         return Corp.builder()
+                .id(UUID.randomUUID().toString())
                 .name(dto.getName())
                 .site(dto.getSite())
                 .career(dto.getCareer())
@@ -50,6 +51,7 @@ public interface CorpService {
 
     default Welfare dtoToWelfareEntity(Corp corpEntity,WelfareRequestDto dto) {
         return Welfare.builder()
+                .id(UUID.randomUUID().toString())
                 .title(dto.getTitle())
                 .subtitle(dto.getSubTitle())
                 .options(dto.getOptions())

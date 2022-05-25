@@ -18,9 +18,8 @@ import java.util.UUID;
 @Getter
 public class Welfare {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(nullable = false,columnDefinition = "BINARY(16)")
-    private UUID id;
+    @Column(nullable = false)
+    private String id;
 
     private String title;
 

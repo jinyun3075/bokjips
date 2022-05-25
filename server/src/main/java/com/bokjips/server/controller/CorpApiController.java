@@ -26,17 +26,17 @@ public class CorpApiController {
     }
 
     @GetMapping("/select/{corp_id}")
-    public ResponseEntity<CorpResponseDto> selectCorp(@PathVariable UUID corp_id) throws IOException{
+    public ResponseEntity<CorpResponseDto> selectCorp(@PathVariable String corp_id) throws IOException{
         return new ResponseEntity<>(corpService.selectCorp(corp_id),HttpStatus.OK);
     }
 
     @PutMapping("/update/{corp_id}")
-    public ResponseEntity<CorpResponseDto> updateCorp(@PathVariable UUID corp_id, @RequestBody CorpRequestDto dto) throws IOException{
+    public ResponseEntity<CorpResponseDto> updateCorp(@PathVariable String corp_id, @RequestBody CorpRequestDto dto) throws IOException{
         return new ResponseEntity<>(corpService.updateCorp(corp_id,dto),HttpStatus.OK);
     }
 
     @DeleteMapping("/delete/{corp_id}")
-    public ResponseEntity<String> deleteCorp(@PathVariable UUID corp_id) throws IOException {
+    public ResponseEntity<String> deleteCorp(@PathVariable String corp_id) throws IOException {
         return new ResponseEntity<>(corpService.deleteCorp(corp_id),HttpStatus.OK);
     }
 }

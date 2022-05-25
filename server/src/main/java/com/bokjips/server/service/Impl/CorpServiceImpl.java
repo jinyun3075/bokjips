@@ -6,6 +6,7 @@ import com.bokjips.server.domain.corp.entity.Corp;
 import com.bokjips.server.domain.corp.repository.CorpRepository;
 import com.bokjips.server.domain.welfare.dto.WelfareRequestDto;
 import com.bokjips.server.domain.welfare.dto.WelfareResponseDto;
+import com.bokjips.server.domain.welfare.entity.Welfare;
 import com.bokjips.server.domain.welfare.repository.WelfareRepository;
 import com.bokjips.server.service.CorpService;
 import lombok.RequiredArgsConstructor;
@@ -45,19 +46,28 @@ public class CorpServiceImpl implements CorpService {
     }
 
     @Override
-    public CorpResponseDto selectCorp(UUID corp_id) throws IOException {
+    public CorpResponseDto selectCorp(String corp_id) throws IOException {
         Optional<Corp> entity = corpRepository.findById(corp_id);
-        log.info(entity);
         if (!entity.isPresent()) {
             log.info("error");
             return null;
         }
-        return null;
-//        return corpEntityToDto(entity.get());
+        List<Welfare> welfareListEntity = welfareRepository.findByCorpId(corp_id);
+        Map<String, List<WelfareResponseDto>> welfareList = new HashMap<>();
+        for(Welfare w : welfareListEntity) {
+            String key = w.getTitle();
+            List<WelfareResponseDto> list = welfareList.getOrDefault(key, new ArrayList<>());
+            list.add(WelfareResponseDto.builder()
+                            .subTitle(w.getSubtitle())
+                            .options(w.getOptions()).build());
+            welfareList.put(key, list);
+        }
+
+        return corpEntityToDto(entity.get(), welfareList);
     }
 
     @Override
-    public CorpResponseDto updateCorp(UUID Corp_id, CorpRequestDto dto) throws IOException {
+    public CorpResponseDto updateCorp(String Corp_id, CorpRequestDto dto) throws IOException {
         Optional<Corp> entity = corpRepository.findById(Corp_id);
         entity.get().update(dto);
 //        return corpEntityToDto(corpRepository.save(entity.get()));
@@ -65,7 +75,7 @@ public class CorpServiceImpl implements CorpService {
     }
 
     @Override
-    public String deleteCorp(UUID corp_id) throws IOException {
+    public String deleteCorp(String corp_id) throws IOException {
         Optional<Corp> entity = corpRepository.findById(corp_id);
         if (!entity.isPresent()) {
             log.info("error");
