@@ -14,15 +14,15 @@ import java.util.Map;
 import java.util.UUID;
 
 public interface CorpService {
-    CorpResponseDto insertCorp(CorpRequestDto dto) throws IOException;
+    CorpResponseDto insertCorp(CorpRequestDto dto) throws Exception;
 
-    CorpResponseDto selectCorp(String corp_id) throws IOException;
+    CorpResponseDto selectCorp(String corp_id) throws Exception;
 
-    CorpResponseDto updateCorp(String corp_id, CorpRequestDto dto) throws IOException;
+    CorpResponseDto updateCorp(String corp_id, CorpRequestDto dto) throws Exception;
 
-    String deleteCorp(String corp_id) throws IOException;
+    String deleteCorp(String corp_id) throws Exception;
 
-    PageResponseDto<CorpResponseDto,Corp> selectCorpList(Integer page, Integer size) throws IOException;
+    PageResponseDto<CorpResponseDto,Corp> selectCorpList(Integer page, Integer size) throws Exception;
     default Corp dtoToCorpEntity(CorpRequestDto dto){
         return Corp.builder()
                 .id(UUID.randomUUID().toString())
