@@ -1,7 +1,9 @@
 package com.bokjips.server.util.security;
 
 import com.bokjips.server.util.security.filter.ApiCheckFilter;
-import com.bokjips.server.util.security.handler.LoginSuccessHandler;
+import com.bokjips.server.util.security.filter.ApiLoginFilter;
+import com.bokjips.server.util.security.handler.ApiLoginFailHandler;
+import com.bokjips.server.util.security.handler.ApiLoginSuccessHandler;
 import com.bokjips.server.util.security.service.BokjipsUserDetailsService;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,15 +28,23 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and().csrf().disable();
 
         http.rememberMe().tokenValiditySeconds(60*60*24*7).userDetailsService(userDetailsService);
-    }
 
-    @Bean
-    public LoginSuccessHandler loginSuccessHandler() {
-        return new LoginSuccessHandler();
+        http.addFilterBefore(apiCheckFilter(),UsernamePasswordAuthenticationFilter.class);
+        http.addFilterBefore(apiLoginFilter(),UsernamePasswordAuthenticationFilter.class);
     }
 
     @Bean
     public ApiCheckFilter apiCheckFilter() {
-        return new ApiCheckFilter();
+        return new ApiCheckFilter("/corp/**");
+    }
+
+    @Bean
+    public ApiLoginFilter apiLoginFilter() throws Exception {
+        ApiLoginFilter apiLoginFilter = new ApiLoginFilter("/user");
+        apiLoginFilter.setAuthenticationManager(authenticationManager());
+        apiLoginFilter.setAuthenticationFailureHandler(new ApiLoginFailHandler());
+        apiLoginFilter.setAuthenticationSuccessHandler(new ApiLoginSuccessHandler());
+
+        return apiLoginFilter;
     }
 }

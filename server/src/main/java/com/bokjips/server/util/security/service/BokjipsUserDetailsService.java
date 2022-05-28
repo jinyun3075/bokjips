@@ -23,9 +23,9 @@ public class BokjipsUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        log.info("UserDetaulService LoadUserByUserName--------------"+username);
+        log.info("UserDetailService LoadUserByUserName--------------"+username);
 
-        BokjipsUser entity = bokjipsUserRepository.findByEmail(username).orElseThrow(()-> new UsernameNotFoundException("로그인 실패"));
+        BokjipsUser entity = bokjipsUserRepository.findByEmail(username).orElseThrow(()-> new UsernameNotFoundException(""));
 
         log.info(entity);
 

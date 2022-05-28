@@ -10,10 +10,11 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 @Log4j2
-public class LoginSuccessHandler implements AuthenticationSuccessHandler {
+public class ApiLoginSuccessHandler implements AuthenticationSuccessHandler {
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
         log.info("----------------------");
-        log.info("onAuthenticationsSuccess");
+        log.info("onAuthenticationsSuccess: "+ authentication);
+        log.info(authentication.getPrincipal());
     }
 }
