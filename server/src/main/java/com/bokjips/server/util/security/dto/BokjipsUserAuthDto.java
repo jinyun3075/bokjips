@@ -13,8 +13,8 @@ import java.util.Collection;
 @Setter
 public class BokjipsUserAuthDto extends User {
 
+    private String user_id;
     private String email;
-
     private String name;
 
     public BokjipsUserAuthDto(String username, String password, Collection<? extends GrantedAuthority> authorities) {

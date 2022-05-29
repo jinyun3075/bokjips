@@ -27,8 +27,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.cors()
                 .and().csrf().disable();
 
-        http.rememberMe().tokenValiditySeconds(60*60*24*7).userDetailsService(userDetailsService);
-
         http.addFilterBefore(apiCheckFilter(),UsernamePasswordAuthenticationFilter.class);
         http.addFilterBefore(apiLoginFilter(),UsernamePasswordAuthenticationFilter.class);
     }
@@ -40,10 +38,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Bean
     public ApiLoginFilter apiLoginFilter() throws Exception {
-        ApiLoginFilter apiLoginFilter = new ApiLoginFilter("/user");
+        ApiLoginFilter apiLoginFilter = new ApiLoginFilter("/user/login");
         apiLoginFilter.setAuthenticationManager(authenticationManager());
-        apiLoginFilter.setAuthenticationFailureHandler(new ApiLoginFailHandler());
         apiLoginFilter.setAuthenticationSuccessHandler(new ApiLoginSuccessHandler());
+        apiLoginFilter.setAuthenticationFailureHandler(new ApiLoginFailHandler());
 
         return apiLoginFilter;
     }

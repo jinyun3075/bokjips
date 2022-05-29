@@ -16,12 +16,13 @@ import java.util.List;
 public class ApiLoginFailHandler implements AuthenticationFailureHandler {
     @Override
     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException, ServletException {
+
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         response.setContentType("application/json;charset=utf-8");
 
         List<String> data = new ArrayList<>();
         data.add("code:401");
-        data.add(exception.getMessage());
+        data.add("아이디 혹은 비밀번호를 다시 확인 해주세요.");
         JSONPObject json = new JSONPObject("Error",data);
 
         ObjectMapper objectMapper =new ObjectMapper();

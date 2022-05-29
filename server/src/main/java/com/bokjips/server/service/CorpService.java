@@ -8,7 +8,7 @@ import com.bokjips.server.domain.welfare.dto.WelfareResponseDto;
 import com.bokjips.server.domain.welfare.entity.Welfare;
 import com.bokjips.server.util.dto.PageResponseDto;
 
-import java.io.IOException;
+
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;

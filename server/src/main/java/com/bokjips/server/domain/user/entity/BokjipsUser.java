@@ -1,6 +1,7 @@
 package com.bokjips.server.domain.user.entity;
 
 import com.bokjips.server.util.entity.BaseEntity;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -21,10 +22,13 @@ public class BokjipsUser extends BaseEntity {
     @Column(nullable = false)
     private String id;
 
+    @Column(length = 100, nullable = false, unique = true)
     private String email;
 
+    @Column(length = 300, nullable = false)
     private String password;
 
+    @Column(length = 100, nullable = false, unique = true)
     private String name;
 
     @ElementCollection(fetch = FetchType.LAZY)

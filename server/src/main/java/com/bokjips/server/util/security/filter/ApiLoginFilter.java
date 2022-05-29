@@ -1,13 +1,14 @@
 package com.bokjips.server.util.security.filter;
 
+import com.bokjips.server.util.security.dto.BokjipsUserLoginDto;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter;
 
-import javax.servlet.FilterChain;
+
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -21,13 +22,9 @@ public class ApiLoginFilter extends AbstractAuthenticationProcessingFilter {
 
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException, IOException, ServletException {
-        log.info("------------------ApiLoginFilter----------------");
-        log.info("attemptAuthentication");
+        BokjipsUserLoginDto body = new ObjectMapper().readValue(request.getInputStream(),BokjipsUserLoginDto.class);
 
-        String email = request.getParameter("email");
-        String pw = request.getParameter("pw");
-
-        UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(email,pw);
+        UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(body.getEmail(),body.getPassword());
 
         return getAuthenticationManager().authenticate(authToken);
     }

@@ -1,5 +1,6 @@
 package com.bokjips.server.util.security.filter;
 
+import com.bokjips.server.util.module.JwtUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.util.JSONPObject;
 
@@ -21,6 +22,7 @@ import java.util.List;
 public class ApiCheckFilter extends OncePerRequestFilter {
     private AntPathMatcher antPathMatcher;
     private String pattern;
+    private JwtUtil jwtUtil = new JwtUtil();
 
     public ApiCheckFilter(String pattern) {
         this.antPathMatcher = new AntPathMatcher();
@@ -58,14 +60,14 @@ public class ApiCheckFilter extends OncePerRequestFilter {
     private boolean checkAuthHeader(HttpServletRequest request) {
         boolean checkResult = false;
         String authHeader = request.getHeader("Authorization");
-
-        if(StringUtils.hasText(authHeader)){
-            log.info("Authorization exist: " + authHeader);
-            if(authHeader.equals("123")) {
-                checkResult = true;
+        if (StringUtils.hasText(authHeader) && authHeader.startsWith("Bearer ")) {
+            try {
+                String token = jwtUtil.validateAndExtract(authHeader.substring(7));
+                checkResult = token.length()>0;
+            } catch(Exception e) {
+                e.printStackTrace();
             }
         }
-
         return checkResult;
     }
 }
