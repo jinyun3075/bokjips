@@ -1,5 +1,6 @@
 package com.bokjips.server.service.Impl;
 
+import com.bokjips.server.domain.corp.dto.CorpListResponseDto;
 import com.bokjips.server.domain.corp.dto.CorpRequestDto;
 import com.bokjips.server.domain.corp.dto.CorpResponseDto;
 import com.bokjips.server.domain.corp.entity.Corp;
@@ -34,6 +35,7 @@ public class CorpServiceImpl implements CorpService {
 
     @Override
     public CorpResponseDto insertCorp(CorpRequestDto dto) throws Exception {
+
         Corp entity = corpRepository.save(dtoToCorpEntity(dto));
 
         for (WelfareRequestDto welfare : dto.getWelfareList()) {
@@ -71,25 +73,20 @@ public class CorpServiceImpl implements CorpService {
     }
 
     @Override
-    public PageResponseDto<CorpResponseDto, Corp> selectCorpList(Integer page, Integer size) throws Exception {
+    public PageResponseDto<CorpListResponseDto, Corp> selectCorpList(Integer page, Integer size) throws Exception {
         PageRequestDto pageRequestDto = pageModule.makePage(page,size);
 
         Page<Corp> entity = corpRepository.findAll(pageRequestDto.getPageable(Sort.by("good").descending()));
 
 
-        Function<Corp, CorpResponseDto> fn = (data -> corpPageToDto(data));
-        PageResponseDto<CorpResponseDto, Corp> pageResponseDto =new PageResponseDto<>(entity, fn);
-        log.info(pageResponseDto);
-        for(CorpResponseDto corp : pageResponseDto.dtoList) {
+        Function<Corp, CorpListResponseDto> fn = (data -> corpPageToDto(data));
+        PageResponseDto<CorpListResponseDto, Corp> pageResponseDto =new PageResponseDto<>(entity, fn);
+
+        for(CorpListResponseDto corp : pageResponseDto.dtoList) {
             List<Welfare> welfareListEntity = welfareRepository.findByCorpId(corp.getCorp_id());
-            Map<String, List<WelfareResponseDto>> welfareList = new HashMap<>();
+            List<String> welfareList = new ArrayList<>();
             for(Welfare w : welfareListEntity) {
-                String key = w.getTitle();
-                List<WelfareResponseDto> list = welfareList.getOrDefault(key, new ArrayList<>());
-                list.add(WelfareResponseDto.builder()
-                        .subTitle(w.getSubtitle())
-                        .options(w.getOptions()).build());
-                welfareList.put(key, list);
+                welfareList.add(w.getSubtitle());
             }
             corp.setWelfareList(welfareList);
         }

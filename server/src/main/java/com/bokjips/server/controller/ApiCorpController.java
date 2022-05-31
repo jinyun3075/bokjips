@@ -1,10 +1,12 @@
 package com.bokjips.server.controller;
 
+import com.bokjips.server.domain.corp.dto.CorpListResponseDto;
 import com.bokjips.server.domain.corp.dto.CorpRequestDto;
 import com.bokjips.server.domain.corp.dto.CorpResponseDto;
 import com.bokjips.server.domain.corp.entity.Corp;
 import com.bokjips.server.service.CorpService;
 import com.bokjips.server.util.dto.PageResponseDto;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
@@ -20,6 +22,7 @@ public class ApiCorpController {
     private final CorpService corpService;
 
     @PostMapping("/insert")
+    @JsonProperty
     public ResponseEntity<CorpResponseDto> insertCorp(@RequestBody CorpRequestDto dto) throws Exception {
         return new ResponseEntity<>(corpService.insertCorp(dto), HttpStatus.OK);
     }
@@ -30,7 +33,7 @@ public class ApiCorpController {
     }
 
     @GetMapping("/select")
-    public ResponseEntity<PageResponseDto<CorpResponseDto, Corp>> selectCorpList(@RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "size", required = false) Integer size) throws Exception {
+    public ResponseEntity<PageResponseDto<CorpListResponseDto, Corp>> selectCorpList(@RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "size", required = false) Integer size) throws Exception {
         return new ResponseEntity<>(corpService.selectCorpList(page,size),HttpStatus.OK);
     }
 

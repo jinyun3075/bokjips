@@ -1,5 +1,6 @@
 package com.bokjips.server.service;
 
+import com.bokjips.server.domain.corp.dto.CorpListResponseDto;
 import com.bokjips.server.domain.corp.dto.CorpRequestDto;
 import com.bokjips.server.domain.corp.dto.CorpResponseDto;
 import com.bokjips.server.domain.corp.entity.Corp;
@@ -22,7 +23,8 @@ public interface CorpService {
 
     String deleteCorp(String corp_id) throws Exception;
 
-    PageResponseDto<CorpResponseDto,Corp> selectCorpList(Integer page, Integer size) throws Exception;
+    PageResponseDto<CorpListResponseDto,Corp> selectCorpList(Integer page, Integer size) throws Exception;
+
     default Corp dtoToCorpEntity(CorpRequestDto dto){
         return Corp.builder()
                 .id(UUID.randomUUID().toString())
@@ -52,8 +54,8 @@ public interface CorpService {
                 .build();
     }
 
-    default CorpResponseDto corpPageToDto(Corp entity) {
-        return CorpResponseDto.builder()
+    default CorpListResponseDto corpPageToDto(Corp entity) {
+        return CorpListResponseDto.builder()
                 .corp_id(entity.getId())
                 .career(entity.getCareer())
                 .category(entity.getCategory())

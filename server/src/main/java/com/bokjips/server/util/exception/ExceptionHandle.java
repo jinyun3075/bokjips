@@ -28,6 +28,9 @@ public class ExceptionHandle {
             if(e.getMessage().split(" ")[5].equals("'bokjips_user.UK_anm3yov971qyjtujrgf7fvdpd'")){
                 return new ErrorResult("505", "중복 이메일입니다.");
             }
+            if(e.getMessage().split(" ")[5].equals("'corp.UK_oix0mbgc93djbmywtsl580rso'")){
+                return new ErrorResult("505", "회사 이름 중복입니다.");
+            }
         }
         if(e.getErrorCode()==1406) {
             return new ErrorResult("505","입력값이 너무 길어요");
