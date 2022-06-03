@@ -19,6 +19,7 @@ public class ExceptionHandle {
         }
         return new ErrorResult("500", e.getMessage());
     }
+
     @ExceptionHandler(DataIntegrityViolationException.class)
     public ErrorResult Handle(SQLException  e) {
         if(e.getErrorCode()==1062){

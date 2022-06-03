@@ -22,7 +22,6 @@ public class ApiCorpController {
     private final CorpService corpService;
 
     @PostMapping("/insert")
-    @JsonProperty
     public ResponseEntity<CorpResponseDto> insertCorp(@RequestBody CorpRequestDto dto) throws Exception {
         return new ResponseEntity<>(corpService.insertCorp(dto), HttpStatus.OK);
     }

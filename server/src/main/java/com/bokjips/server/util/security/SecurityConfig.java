@@ -5,22 +5,25 @@ import com.bokjips.server.util.security.filter.ApiLoginFilter;
 import com.bokjips.server.util.security.handler.ApiLoginFailHandler;
 import com.bokjips.server.util.security.handler.ApiLoginSuccessHandler;
 import com.bokjips.server.util.security.service.BokjipsUserDetailsService;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
-@Configuration
+import java.util.List;
+
+
 @Log4j2
-@EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true)
+@EnableWebSecurity
+@RequiredArgsConstructor
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
-
-    @Autowired
-    private BokjipsUserDetailsService userDetailsService;
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -33,7 +36,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Bean
     public ApiCheckFilter apiCheckFilter() {
-        return new ApiCheckFilter("/corp");
+        return new ApiCheckFilter("/corp/insert");
     }
 
     @Bean
@@ -44,5 +47,19 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         apiLoginFilter.setAuthenticationFailureHandler(new ApiLoginFailHandler());
 
         return apiLoginFilter;
+    }
+
+
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        final CorsConfiguration configuration = new CorsConfiguration();
+        configuration.setAllowedOrigins(List.of("http://front:3000","http://localhost:3000"));
+        configuration.addAllowedHeader("*");
+        configuration.addAllowedMethod("*");
+        configuration.setAllowCredentials(true);
+
+        final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
     }
 }

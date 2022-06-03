@@ -19,7 +19,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
 import java.util.*;
 import java.util.function.Function;
 
@@ -29,7 +28,6 @@ import java.util.function.Function;
 public class CorpServiceImpl implements CorpService {
 
     private final PageModule pageModule;
-
     private final CorpRepository corpRepository;
     private final WelfareRepository welfareRepository;
 
