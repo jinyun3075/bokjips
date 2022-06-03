@@ -11,6 +11,10 @@
   - [1.4 회사 수정](#회사-수정)
   - [1.5 회사 삭제](#회사-삭제)
 
+- ### [2 유저](#유저)
+  - [2.1 회원가입](#회원가입)
+  - [2.2 로그인](#로그인)
+
 
 ## 회사
 ### 회사 등록
@@ -99,9 +103,7 @@
       - good: Number
       - image: String
       - welfareList: Array
-         - {title}: Array
-            - subTitle: String
-            - options: String
+         - String
       - regDate: Date
       - modDate: Date   
   - totalPage: Number
@@ -167,3 +169,45 @@
 
 - fail
     - 없는 corp_id일 경우
+
+
+## 유저
+### 회원가입
+- api
+  - /user/insert
+ 
+- headers
+  - Content-type : "application/json"
+
+- req
+  - email: String
+  - name: String
+  - password: String
+
+- res
+  - user_id: String
+  - email: String
+  - name: String
+  - token: null
+
+- fail
+  - email 형식이 아닐 때
+  - 중복 email, name 일 때
+
+### 로그인
+
+- api
+  - /user/login
+ 
+- headers
+  - Content-type : "application/json"
+
+- res
+  - user_id: String
+  - email: String
+  - name: String
+  - token: String
+
+- fail
+  - email 형식이 아닐 때
+  - 중복 email, name 일 때
