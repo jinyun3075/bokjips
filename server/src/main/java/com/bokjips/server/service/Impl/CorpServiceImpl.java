@@ -1,5 +1,6 @@
 package com.bokjips.server.service.Impl;
 
+import com.bokjips.server.domain.corp.dto.CorpListResponseDto;
 import com.bokjips.server.domain.corp.dto.CorpRequestDto;
 import com.bokjips.server.domain.corp.dto.CorpResponseDto;
 import com.bokjips.server.domain.corp.entity.Corp;
@@ -18,7 +19,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
 import java.util.*;
 import java.util.function.Function;
 
@@ -28,12 +28,12 @@ import java.util.function.Function;
 public class CorpServiceImpl implements CorpService {
 
     private final PageModule pageModule;
-
     private final CorpRepository corpRepository;
     private final WelfareRepository welfareRepository;
 
     @Override
-    public CorpResponseDto insertCorp(CorpRequestDto dto) throws IOException {
+    public CorpResponseDto insertCorp(CorpRequestDto dto) throws Exception {
+
         Corp entity = corpRepository.save(dtoToCorpEntity(dto));
 
         for (WelfareRequestDto welfare : dto.getWelfareList()) {
@@ -54,12 +54,8 @@ public class CorpServiceImpl implements CorpService {
     }
 
     @Override
-    public CorpResponseDto selectCorp(String corp_id) throws IOException {
-        Optional<Corp> entity = corpRepository.findById(corp_id);
-        if (!entity.isPresent()) {
-            log.info("error");
-            return null;
-        }
+    public CorpResponseDto selectCorp(String corp_id) throws Exception {
+        Corp entity = corpRepository.findById(corp_id).orElseThrow(()->new Exception("존재하지않는 아이디입니다."));
         List<Welfare> welfareListEntity = welfareRepository.findByCorpId(corp_id);
         Map<String, List<WelfareResponseDto>> welfareList = new HashMap<>();
         for(Welfare w : welfareListEntity) {
@@ -71,29 +67,24 @@ public class CorpServiceImpl implements CorpService {
             welfareList.put(key, list);
         }
 
-        return corpEntityToDto(entity.get(), welfareList);
+        return corpEntityToDto(entity, welfareList);
     }
 
     @Override
-    public PageResponseDto<CorpResponseDto, Corp> selectCorpList(Integer page, Integer size) throws IOException {
+    public PageResponseDto<CorpListResponseDto, Corp> selectCorpList(Integer page, Integer size) throws Exception {
         PageRequestDto pageRequestDto = pageModule.makePage(page,size);
 
         Page<Corp> entity = corpRepository.findAll(pageRequestDto.getPageable(Sort.by("good").descending()));
 
 
-        Function<Corp, CorpResponseDto> fn = (data -> corpPageToDto(data));
-        PageResponseDto<CorpResponseDto, Corp> pageResponseDto =new PageResponseDto<>(entity, fn);
-        log.info(pageResponseDto);
-        for(CorpResponseDto corp : pageResponseDto.dtoList) {
+        Function<Corp, CorpListResponseDto> fn = (data -> corpPageToDto(data));
+        PageResponseDto<CorpListResponseDto, Corp> pageResponseDto =new PageResponseDto<>(entity, fn);
+
+        for(CorpListResponseDto corp : pageResponseDto.dtoList) {
             List<Welfare> welfareListEntity = welfareRepository.findByCorpId(corp.getCorp_id());
-            Map<String, List<WelfareResponseDto>> welfareList = new HashMap<>();
+            List<String> welfareList = new ArrayList<>();
             for(Welfare w : welfareListEntity) {
-                String key = w.getTitle();
-                List<WelfareResponseDto> list = welfareList.getOrDefault(key, new ArrayList<>());
-                list.add(WelfareResponseDto.builder()
-                        .subTitle(w.getSubtitle())
-                        .options(w.getOptions()).build());
-                welfareList.put(key, list);
+                welfareList.add(w.getSubtitle());
             }
             corp.setWelfareList(welfareList);
         }
@@ -101,9 +92,9 @@ public class CorpServiceImpl implements CorpService {
     }
 
     @Override
-    public CorpResponseDto updateCorp(String Corp_id, CorpRequestDto dto) throws IOException {
-        Optional<Corp> entity = corpRepository.findById(Corp_id);
-        entity.get().update(dto);
+    public CorpResponseDto updateCorp(String Corp_id, CorpRequestDto dto) throws Exception {
+        Corp entity = corpRepository.findById(Corp_id).orElseThrow(()->new Exception("존재하지 않는 아이디입니다."));
+        entity.update(dto);
 
         Long result = welfareRepository.deleteByCorpId(Corp_id);
         if(result==0) {
@@ -111,7 +102,7 @@ public class CorpServiceImpl implements CorpService {
         }
 
         for (WelfareRequestDto welfare : dto.getWelfareList()) {
-            welfareRepository.save(dtoToWelfareEntity(entity.get(), welfare));
+            welfareRepository.save(dtoToWelfareEntity(entity, welfare));
         }
 
         Map<String, List<WelfareResponseDto>> welfareList = new HashMap<>();
@@ -124,17 +115,13 @@ public class CorpServiceImpl implements CorpService {
             welfareList.put(key, list);
         }
 
-        return corpEntityToDto(corpRepository.save(entity.get()),welfareList);
+        return corpEntityToDto(corpRepository.save(entity),welfareList);
     }
 
     @Override
-    public String deleteCorp(String corp_id) throws IOException {
-        Optional<Corp> entity = corpRepository.findById(corp_id);
-        if (!entity.isPresent()) {
-            log.info("error");
-            return "삭제 실패";
-        }
-        corpRepository.delete(entity.get());
+    public String deleteCorp(String corp_id) throws Exception {
+        Corp entity = corpRepository.findById(corp_id).orElseThrow(()->new Exception("존재하지 않는 아이디 입니다."));
+        corpRepository.delete(entity);
         return "삭제 완료";
     }
 }
