@@ -14,8 +14,8 @@ import java.sql.SQLException;
 public class ExceptionHandle {
     @ExceptionHandler
     public ErrorResult Handle(Exception e) {
-        if(e.getMessage()==null) {
-            return new ErrorResult("402","null 값이 있네요.");
+        if (e.getMessage() == null) {
+            return new ErrorResult("402", "null 값이 있네요.");
         }
         return new ErrorResult("500", e.getMessage());
     }
