@@ -14,6 +14,8 @@ public interface CommentsService {
 
     PageResponseDto<CommentsResponseDto, Comments> selectListComments(String corp_id, Integer page, Integer size) throws Exception;
 
+    String deleteComments(String comments_id) throws Exception;
+
     default Comments dtoToEntity(CommentsRequestDto dto, Corp corpEntity, BokjipsUser userEntity) {
         return Comments.builder()
                 .id(UUID.randomUUID().toString())

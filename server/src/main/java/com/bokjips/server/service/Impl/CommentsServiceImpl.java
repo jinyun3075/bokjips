@@ -18,6 +18,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
 import java.util.function.Function;
 
 @Service
@@ -50,5 +51,12 @@ public class CommentsServiceImpl implements CommentsService {
         Function<Comments, CommentsResponseDto> fn = (data->entityToDto(data));
 
         return new PageResponseDto<>(list,fn);
+    }
+
+    @Override
+    public String deleteComments(String comments_id) throws Exception {
+        commentsRepository.findById(comments_id).orElseThrow(()-> new Exception("없는 댓글 입니다."));
+        commentsRepository.deleteById(comments_id);
+        return "삭제 완료";
     }
 }

@@ -29,5 +29,9 @@ public class ApiCommentsController {
         return new ResponseEntity<>(commentsService.selectListComments(corp_id, page, size),HttpStatus.OK);
     }
 
+    @DeleteMapping("/delete/{comments_id}")
+    public ResponseEntity<String> deleteComments(@PathVariable String comments_id) throws Exception {
+        return new ResponseEntity<>(commentsService.deleteComments(comments_id),HttpStatus.OK);
+    }
 
 }
