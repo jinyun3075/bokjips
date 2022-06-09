@@ -1,8 +1,6 @@
 package com.bokjips.server.service;
 
-import com.bokjips.server.domain.corp.dto.CorpListResponseDto;
-import com.bokjips.server.domain.corp.dto.CorpRequestDto;
-import com.bokjips.server.domain.corp.dto.CorpResponseDto;
+import com.bokjips.server.domain.corp.dto.*;
 import com.bokjips.server.domain.corp.entity.Corp;
 import com.bokjips.server.domain.welfare.dto.WelfareRequestDto;
 import com.bokjips.server.domain.welfare.dto.WelfareResponseDto;
@@ -24,6 +22,8 @@ public interface CorpService {
     String deleteCorp(String corp_id) throws Exception;
 
     PageResponseDto<CorpListResponseDto,Corp> selectCorpList(Integer page, Integer size) throws Exception;
+
+    List<CorpMiniResponseDto> selectMini(CorpMiniRequestDto dto) throws Exception;
 
     default Corp dtoToCorpEntity(CorpRequestDto dto){
         return Corp.builder()
@@ -76,6 +76,14 @@ public interface CorpService {
                 .subtitle(dto.getSubTitle())
                 .options(dto.getOptions())
                 .corp(corpEntity)
+                .build();
+    }
+
+    default CorpMiniResponseDto entityToMiniDto(Corp entity) {
+        return CorpMiniResponseDto.builder()
+                .corp_id(entity.getId())
+                .name(entity.getName())
+                .good(entity.getGood())
                 .build();
     }
 }

@@ -1,8 +1,6 @@
 package com.bokjips.server.service.Impl;
 
-import com.bokjips.server.domain.corp.dto.CorpListResponseDto;
-import com.bokjips.server.domain.corp.dto.CorpRequestDto;
-import com.bokjips.server.domain.corp.dto.CorpResponseDto;
+import com.bokjips.server.domain.corp.dto.*;
 import com.bokjips.server.domain.corp.entity.Corp;
 import com.bokjips.server.domain.corp.repository.CorpRepository;
 import com.bokjips.server.domain.welfare.dto.WelfareRequestDto;
@@ -21,6 +19,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.*;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -123,5 +122,25 @@ public class CorpServiceImpl implements CorpService {
         Corp entity = corpRepository.findById(corp_id).orElseThrow(()->new Exception("존재하지 않는 아이디 입니다."));
         corpRepository.delete(entity);
         return "삭제 완료";
+    }
+
+    @Override
+    public List<CorpMiniResponseDto> selectMini(CorpMiniRequestDto dto) throws Exception {
+        List<CorpMiniResponseDto> allList = new ArrayList<>();
+        int limit = 0;
+        for(String data: dto.getCategory()){
+            List<Corp> entityList = corpRepository.findByCategory(data);
+            for(Corp entity: entityList) {
+                if(limit>9){
+                    break;
+                }
+                limit++;
+                allList.add(entityToMiniDto(entity));
+            }
+            if(limit>9){
+                break;
+            }
+        }
+        return allList;
     }
 }
