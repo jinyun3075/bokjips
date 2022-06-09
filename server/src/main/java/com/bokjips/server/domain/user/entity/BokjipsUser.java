@@ -16,19 +16,18 @@ import java.util.Set;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "bokjips_user")
 public class BokjipsUser extends BaseEntity {
     @Id
     @Column(nullable = false)
     private String id;
 
-    @Column(length = 100, nullable = false, unique = true)
+    @Column(unique = true, nullable = false)
     private String email;
 
     @Column(length = 300, nullable = false)
     private String password;
 
-    @Column(length = 100, nullable = false, unique = true)
+    @Column(unique = true, nullable = false)
     private String name;
 
     @ElementCollection(fetch = FetchType.LAZY)

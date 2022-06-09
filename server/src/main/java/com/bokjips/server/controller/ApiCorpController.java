@@ -1,17 +1,16 @@
 package com.bokjips.server.controller;
 
-import com.bokjips.server.domain.corp.dto.CorpListResponseDto;
-import com.bokjips.server.domain.corp.dto.CorpRequestDto;
-import com.bokjips.server.domain.corp.dto.CorpResponseDto;
+import com.bokjips.server.domain.corp.dto.*;
 import com.bokjips.server.domain.corp.entity.Corp;
 import com.bokjips.server.service.CorpService;
 import com.bokjips.server.util.dto.PageResponseDto;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/corp")
@@ -34,6 +33,11 @@ public class ApiCorpController {
     @GetMapping("/select")
     public ResponseEntity<PageResponseDto<CorpListResponseDto, Corp>> selectCorpList(@RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "size", required = false) Integer size) throws Exception {
         return new ResponseEntity<>(corpService.selectCorpList(page,size),HttpStatus.OK);
+    }
+
+    @PostMapping("/select/mini")
+    public ResponseEntity<List<CorpMiniResponseDto>> selectMini(@RequestBody CorpMiniRequestDto dto) throws Exception{
+        return new ResponseEntity<>(corpService.selectMini(dto),HttpStatus.OK);
     }
 
     @PutMapping("/update/{corp_id}")
