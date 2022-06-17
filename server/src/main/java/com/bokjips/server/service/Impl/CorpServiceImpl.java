@@ -35,17 +35,16 @@ public class CorpServiceImpl implements CorpService {
 
         Corp entity = corpRepository.save(dtoToCorpEntity(dto));
 
-        for (WelfareRequestDto welfare : dto.getWelfareList()) {
-            welfareRepository.save(dtoToWelfareEntity(entity, welfare));
+        for (String key : dto.getWelfareList().keySet()) {
+            welfareRepository.save(dtoToWelfareEntity(entity, key,dto.getWelfareList().get(key)));
         }
 
         Map<String, List<WelfareResponseDto>> welfareList = new HashMap<>();
-        for (WelfareRequestDto welfare : dto.getWelfareList()) {
-            String key = welfare.getTitle();
+        for (String key : dto.getWelfareList().keySet()) {
             List<WelfareResponseDto> list = welfareList.getOrDefault(key, new ArrayList<>());
             list.add(WelfareResponseDto.builder()
-                    .subTitle(welfare.getSubTitle())
-                    .options(welfare.getOptions()).build());
+                    .subTitle(dto.getWelfareList().get(key).getSubTitle())
+                    .options(dto.getWelfareList().get(key).getOptions()).build());
             welfareList.put(key, list);
         }
 
@@ -100,17 +99,16 @@ public class CorpServiceImpl implements CorpService {
             return null;
         }
 
-        for (WelfareRequestDto welfare : dto.getWelfareList()) {
-            welfareRepository.save(dtoToWelfareEntity(entity, welfare));
+        for (String key : dto.getWelfareList().keySet()) {
+            welfareRepository.save(dtoToWelfareEntity(entity, key,dto.getWelfareList().get(key)));
         }
 
         Map<String, List<WelfareResponseDto>> welfareList = new HashMap<>();
-        for (WelfareRequestDto welfare : dto.getWelfareList()) {
-            String key = welfare.getTitle();
+        for (String key : dto.getWelfareList().keySet()) {
             List<WelfareResponseDto> list = welfareList.getOrDefault(key, new ArrayList<>());
             list.add(WelfareResponseDto.builder()
-                    .subTitle(welfare.getSubTitle())
-                    .options(welfare.getOptions()).build());
+                    .subTitle(dto.getWelfareList().get(key).getSubTitle())
+                    .options(dto.getWelfareList().get(key).getOptions()).build());
             welfareList.put(key, list);
         }
 

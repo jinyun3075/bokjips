@@ -69,10 +69,10 @@ public interface CorpService {
                 .build();
     }
 
-    default Welfare dtoToWelfareEntity(Corp corpEntity,WelfareRequestDto dto) {
+    default Welfare dtoToWelfareEntity(Corp corpEntity,String title,WelfareRequestDto dto) {
         return Welfare.builder()
                 .id(UUID.randomUUID().toString())
-                .title(dto.getTitle())
+                .title(title)
                 .subtitle(dto.getSubTitle())
                 .options(dto.getOptions())
                 .corp(corpEntity)

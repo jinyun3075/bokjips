@@ -5,7 +5,6 @@ import lombok.Data;
 
 @Data
 public class WelfareRequestDto {
-    String title;
     String subTitle;
     String options;
 }
