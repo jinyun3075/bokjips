@@ -36,16 +36,20 @@ public class CorpServiceImpl implements CorpService {
         Corp entity = corpRepository.save(dtoToCorpEntity(dto));
 
         for (String key : dto.getWelfareList().keySet()) {
-            welfareRepository.save(dtoToWelfareEntity(entity, key,dto.getWelfareList().get(key)));
+            for(WelfareRequestDto welfare: dto.getWelfareList().get(key)){
+                welfareRepository.save(dtoToWelfareEntity(entity, key, welfare));
+            }
         }
-
+        log.info(dto.getWelfareList());
         Map<String, List<WelfareResponseDto>> welfareList = new HashMap<>();
         for (String key : dto.getWelfareList().keySet()) {
-            List<WelfareResponseDto> list = welfareList.getOrDefault(key, new ArrayList<>());
-            list.add(WelfareResponseDto.builder()
-                    .subTitle(dto.getWelfareList().get(key).getSubTitle())
-                    .options(dto.getWelfareList().get(key).getOptions()).build());
-            welfareList.put(key, list);
+            for(WelfareRequestDto welfare: dto.getWelfareList().get(key)){
+                List<WelfareResponseDto> list = welfareList.getOrDefault(key, new ArrayList<>());
+                list.add(WelfareResponseDto.builder()
+                        .subTitle(welfare.getSubTitle())
+                        .options(welfare.getOptions()).build());
+                welfareList.put(key, list);
+            }
         }
 
         return corpEntityToDto(entity,welfareList);
@@ -100,16 +104,20 @@ public class CorpServiceImpl implements CorpService {
         }
 
         for (String key : dto.getWelfareList().keySet()) {
-            welfareRepository.save(dtoToWelfareEntity(entity, key,dto.getWelfareList().get(key)));
+            for(WelfareRequestDto welfare: dto.getWelfareList().get(key)){
+                welfareRepository.save(dtoToWelfareEntity(entity, key,welfare));
+            }
         }
 
         Map<String, List<WelfareResponseDto>> welfareList = new HashMap<>();
         for (String key : dto.getWelfareList().keySet()) {
-            List<WelfareResponseDto> list = welfareList.getOrDefault(key, new ArrayList<>());
-            list.add(WelfareResponseDto.builder()
-                    .subTitle(dto.getWelfareList().get(key).getSubTitle())
-                    .options(dto.getWelfareList().get(key).getOptions()).build());
-            welfareList.put(key, list);
+            for(WelfareRequestDto welfare: dto.getWelfareList().get(key)){
+                List<WelfareResponseDto> list = welfareList.getOrDefault(key, new ArrayList<>());
+                list.add(WelfareResponseDto.builder()
+                        .subTitle(welfare.getSubTitle())
+                        .options(welfare.getOptions()).build());
+                welfareList.put(key, list);
+            }
         }
 
         return corpEntityToDto(corpRepository.save(entity),welfareList);

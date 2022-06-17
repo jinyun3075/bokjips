@@ -15,6 +15,6 @@ public class CorpRequestDto {
     private final List<String> category;
     private final boolean stock;
     private final String image;
-    private final Map<String,WelfareRequestDto> welfareList;
+    private final Map<String,List<WelfareRequestDto>> welfareList;
 
 }
