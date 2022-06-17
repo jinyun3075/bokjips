@@ -36,10 +36,10 @@
   - category: Array<String>
   - stock: Boolean
   - image: String
-  - welfareList: Array
-    - title: String
-    - subTitle: String
-    - options: String
+  - welfareList: Object
+    - {title}
+      - subTitle: String
+      - options: String
    
 - res
   - corp_id: String
@@ -50,7 +50,7 @@
   - stock: Boolean
   - good: Number
   - image: String
-  - welfareList: Array
+  - welfareList: Object
     - {title}
       - subTitle: String
       - options: String
@@ -130,10 +130,10 @@
   - category: Array<String>
   - stock: Boolean
   - image: String
-  - welfareList: Array
-    - title: String
-    - subTitle: String
-    - options: String
+  - welfareList: Object
+    - {title}
+      - subTitle: String
+      - options: String
      
 - res
   - corp_id: String
