@@ -26,6 +26,8 @@ public interface CorpService {
 
     List<CorpMiniResponseDto> selectMini(CorpMiniRequestDto dto) throws Exception;
 
+    String updateGoods (GoodsRequestDto dto) throws Exception;
+
     default Corp dtoToCorpEntity(CorpRequestDto dto){
         return Corp.builder()
                 .id(UUID.randomUUID().toString())
@@ -35,7 +37,7 @@ public interface CorpService {
                 .category(dto.getCategory())
                 .stock(dto.isStock())
                 .image(dto.getImage())
-                .good(new ArrayList<>())
+                .userId(new ArrayList<>())
                 .build();
     }
 
@@ -45,7 +47,7 @@ public interface CorpService {
                 .career(entity.getCareer())
                 .category(entity.getCategory())
                 .image(entity.getImage())
-                .good(entity.getGood())
+                .good(entity.getUserId())
                 .name(entity.getName())
                 .modDate(entity.getModDate())
                 .regDate(entity.getRegDate())
@@ -61,7 +63,7 @@ public interface CorpService {
                 .career(entity.getCareer())
                 .category(entity.getCategory())
                 .image(entity.getImage())
-                .good(entity.getGood())
+                .good(entity.getUserId())
                 .name(entity.getName())
                 .modDate(entity.getModDate())
                 .regDate(entity.getRegDate())
@@ -84,7 +86,7 @@ public interface CorpService {
         return CorpMiniResponseDto.builder()
                 .corp_id(entity.getId())
                 .name(entity.getName())
-                .good((long) entity.getGood().size())
+                .good((long) entity.getUserId().size())
                 .build();
     }
 }

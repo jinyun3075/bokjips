@@ -19,7 +19,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.*;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -148,5 +147,18 @@ public class CorpServiceImpl implements CorpService {
             }
         }
         return allList;
+    }
+
+    @Override
+    public String updateGoods(GoodsRequestDto dto) throws Exception{
+        Corp entity = corpRepository.findById(dto.getCorp_id()).orElseThrow(()->new Exception("존재하지 않는 corp_id 입니다."));
+
+        if(entity.getUserId().remove(dto.getUser_id())){
+            corpRepository.save(entity);
+            return "좋아요 취소";
+        }
+        entity.getUserId().add(dto.getUser_id());
+        corpRepository.save(entity);
+        return "좋아요 등록";
     }
 }

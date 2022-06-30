@@ -39,8 +39,8 @@ public class Corp extends BaseEntity {
     private boolean stock;
 
     @ElementCollection
-    @CollectionTable(name = "good")
-    private List<String> good;
+    @CollectionTable(name = "goods")
+    private List<String> userId;
 
     private String image;
 
