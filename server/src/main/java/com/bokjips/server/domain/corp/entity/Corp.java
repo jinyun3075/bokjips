@@ -38,7 +38,9 @@ public class Corp extends BaseEntity {
     @Column(nullable = false)
     private boolean stock;
 
-    private Long good;
+    @ElementCollection
+    @CollectionTable(name = "good")
+    private List<String> good;
 
     private String image;
 

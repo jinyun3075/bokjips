@@ -8,6 +8,7 @@ import com.bokjips.server.domain.welfare.entity.Welfare;
 import com.bokjips.server.util.dto.PageResponseDto;
 
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -34,7 +35,7 @@ public interface CorpService {
                 .category(dto.getCategory())
                 .stock(dto.isStock())
                 .image(dto.getImage())
-                .good(0l)
+                .good(new ArrayList<>())
                 .build();
     }
 
@@ -83,7 +84,7 @@ public interface CorpService {
         return CorpMiniResponseDto.builder()
                 .corp_id(entity.getId())
                 .name(entity.getName())
-                .good(entity.getGood())
+                .good((long) entity.getGood().size())
                 .build();
     }
 }
