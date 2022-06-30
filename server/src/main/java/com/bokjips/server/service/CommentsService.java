@@ -31,7 +31,7 @@ public interface CommentsService {
                 .comments_id(comments.getId())
                 .title(comments.getTitle())
                 .content(comments.getContent())
-                .writer(comments.getBokjipsUser())
+                .writer_id(comments.getBokjipsUser().getId())
                 .modDate(comments.getModDate())
                 .regDate(comments.getRegDate())
                 .build();

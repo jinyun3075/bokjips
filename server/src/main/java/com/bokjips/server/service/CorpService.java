@@ -8,6 +8,7 @@ import com.bokjips.server.domain.welfare.entity.Welfare;
 import com.bokjips.server.util.dto.PageResponseDto;
 
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -25,6 +26,8 @@ public interface CorpService {
 
     List<CorpMiniResponseDto> selectMini(CorpMiniRequestDto dto) throws Exception;
 
+    String updateGoods (GoodsRequestDto dto) throws Exception;
+
     default Corp dtoToCorpEntity(CorpRequestDto dto){
         return Corp.builder()
                 .id(UUID.randomUUID().toString())
@@ -34,7 +37,7 @@ public interface CorpService {
                 .category(dto.getCategory())
                 .stock(dto.isStock())
                 .image(dto.getImage())
-                .good(0l)
+                .userId(new ArrayList<>())
                 .build();
     }
 
@@ -44,7 +47,7 @@ public interface CorpService {
                 .career(entity.getCareer())
                 .category(entity.getCategory())
                 .image(entity.getImage())
-                .good(entity.getGood())
+                .good(entity.getUserId())
                 .name(entity.getName())
                 .modDate(entity.getModDate())
                 .regDate(entity.getRegDate())
@@ -60,7 +63,7 @@ public interface CorpService {
                 .career(entity.getCareer())
                 .category(entity.getCategory())
                 .image(entity.getImage())
-                .good(entity.getGood())
+                .good(entity.getUserId())
                 .name(entity.getName())
                 .modDate(entity.getModDate())
                 .regDate(entity.getRegDate())
@@ -69,10 +72,10 @@ public interface CorpService {
                 .build();
     }
 
-    default Welfare dtoToWelfareEntity(Corp corpEntity,WelfareRequestDto dto) {
+    default Welfare dtoToWelfareEntity(Corp corpEntity,String title,WelfareRequestDto dto) {
         return Welfare.builder()
                 .id(UUID.randomUUID().toString())
-                .title(dto.getTitle())
+                .title(title)
                 .subtitle(dto.getSubTitle())
                 .options(dto.getOptions())
                 .corp(corpEntity)
@@ -83,7 +86,7 @@ public interface CorpService {
         return CorpMiniResponseDto.builder()
                 .corp_id(entity.getId())
                 .name(entity.getName())
-                .good(entity.getGood())
+                .good((long) entity.getUserId().size())
                 .build();
     }
 }

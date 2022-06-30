@@ -12,7 +12,7 @@ public class CommentsResponseDto {
     private String comments_id;
     private String title;
     private String content;
-    private BokjipsUser writer;
+    private String writer_id;
     private final LocalDateTime regDate;
     private final LocalDateTime modDate;
 }

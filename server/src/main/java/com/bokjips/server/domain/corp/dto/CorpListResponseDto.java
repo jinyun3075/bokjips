@@ -17,7 +17,7 @@ public class CorpListResponseDto {
     private final String career;
     private final List<String> category;
     private final boolean stock;
-    private final Long good;
+    private final List<String> good;
     private final String image;
     List<String> welfareList;
     private final LocalDateTime regDate;

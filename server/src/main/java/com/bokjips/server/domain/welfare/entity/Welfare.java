@@ -34,10 +34,4 @@ public class Welfare {
     )
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Corp corp;
-
-    public void update(WelfareRequestDto welfareRequestDto) {
-        this.title = welfareRequestDto.getTitle();
-        this.subtitle = welfareRequestDto.getSubTitle();
-        this.options = welfareRequestDto.getOptions();
-    }
 }

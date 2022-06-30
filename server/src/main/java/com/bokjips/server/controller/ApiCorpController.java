@@ -49,4 +49,9 @@ public class ApiCorpController {
     public ResponseEntity<String> deleteCorp(@PathVariable String corp_id) throws Exception {
         return new ResponseEntity<>(corpService.deleteCorp(corp_id),HttpStatus.OK);
     }
+
+    @PostMapping("/good")
+    public ResponseEntity<String> updateGoods(@RequestBody GoodsRequestDto dto) throws Exception{
+        return new ResponseEntity<>(corpService.updateGoods(dto),HttpStatus.OK);
+    }
 }

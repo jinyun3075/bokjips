@@ -21,7 +21,7 @@ public class CorpResponseDto {
     private final String career;
     private final List<String> category;
     private final boolean stock;
-    private final Long good;
+    private final List<String> good;
     private final String image;
     Map<String,List<WelfareResponseDto>> welfareList;
     private final LocalDateTime regDate;
