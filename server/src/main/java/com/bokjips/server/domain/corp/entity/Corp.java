@@ -3,6 +3,8 @@ package com.bokjips.server.domain.corp.entity;
 import com.bokjips.server.domain.corp.dto.CorpRequestDto;
 import com.bokjips.server.util.entity.BaseEntity;
 import lombok.*;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 import org.hibernate.annotations.TypeDef;
 
 import javax.persistence.*;
@@ -37,10 +39,6 @@ public class Corp extends BaseEntity {
 
     @Column(nullable = false)
     private boolean stock;
-
-    @ElementCollection
-    @CollectionTable(name = "goods")
-    private List<String> userId;
 
     private String image;
 

@@ -2,7 +2,10 @@ package com.bokjips.server.service.Impl;
 
 import com.bokjips.server.domain.corp.dto.*;
 import com.bokjips.server.domain.corp.entity.Corp;
+import com.bokjips.server.domain.corp.entity.CorpGoods;
+import com.bokjips.server.domain.corp.repository.CorpGoodsRepository;
 import com.bokjips.server.domain.corp.repository.CorpRepository;
+import com.bokjips.server.domain.user.repository.BokjipsUserRepository;
 import com.bokjips.server.domain.welfare.dto.WelfareRequestDto;
 import com.bokjips.server.domain.welfare.dto.WelfareResponseDto;
 import com.bokjips.server.domain.welfare.entity.Welfare;
@@ -28,6 +31,8 @@ public class CorpServiceImpl implements CorpService {
     private final PageModule pageModule;
     private final CorpRepository corpRepository;
     private final WelfareRepository welfareRepository;
+    private final CorpGoodsRepository corpGoodsRepository;
+    private final BokjipsUserRepository bokjipsUserRepository;
 
     @Override
     public CorpResponseDto insertCorp(CorpRequestDto dto) throws Exception {
@@ -39,7 +44,7 @@ public class CorpServiceImpl implements CorpService {
                 welfareRepository.save(dtoToWelfareEntity(entity, key, welfare));
             }
         }
-        log.info(dto.getWelfareList());
+
         Map<String, List<WelfareResponseDto>> welfareList = new HashMap<>();
         for (String key : dto.getWelfareList().keySet()) {
             for(WelfareRequestDto welfare: dto.getWelfareList().get(key)){
@@ -51,11 +56,11 @@ public class CorpServiceImpl implements CorpService {
             }
         }
 
-        return corpEntityToDto(entity,welfareList);
+        return corpEntityToDto(entity, welfareList, false, 0l);
     }
 
     @Override
-    public CorpResponseDto selectCorp(String corp_id) throws Exception {
+    public CorpResponseDto selectCorp(String corp_id, String user_id) throws Exception {
         Corp entity = corpRepository.findById(corp_id).orElseThrow(()->new Exception("존재하지않는 아이디입니다."));
         List<Welfare> welfareListEntity = welfareRepository.findByCorpId(corp_id);
         Map<String, List<WelfareResponseDto>> welfareList = new HashMap<>();
@@ -67,18 +72,23 @@ public class CorpServiceImpl implements CorpService {
                             .options(w.getOptions()).build());
             welfareList.put(key, list);
         }
-
-        return corpEntityToDto(entity, welfareList);
+        Optional<CorpGoods> corpGoods = corpGoodsRepository.findByCorpIdAndUserId(corp_id,user_id);
+        boolean state = false;
+        if (corpGoods.isPresent()) {
+            state = true;
+        }
+        Long goodSize = corpGoodsRepository.countByCorpId(corp_id);
+        return corpEntityToDto(entity, welfareList, state,goodSize);
     }
 
     @Override
     public PageResponseDto<CorpListResponseDto, Corp> selectCorpList(Integer page, Integer size) throws Exception {
         PageRequestDto pageRequestDto = pageModule.makePage(page,size);
 
-        Page<Corp> entity = corpRepository.findAll(pageRequestDto.getPageable(Sort.by("good").descending()));
+        Page<Corp> entity = corpRepository.findAll(pageRequestDto.getPageable(Sort.by("modDate").descending()));
 
 
-        Function<Corp, CorpListResponseDto> fn = (data -> corpPageToDto(data));
+        Function<Corp, CorpListResponseDto> fn = (data -> corpPageToDto(data,corpGoodsRepository.countByCorpId(data.getId())));
         PageResponseDto<CorpListResponseDto, Corp> pageResponseDto =new PageResponseDto<>(entity, fn);
 
         for(CorpListResponseDto corp : pageResponseDto.dtoList) {
@@ -93,11 +103,11 @@ public class CorpServiceImpl implements CorpService {
     }
 
     @Override
-    public CorpResponseDto updateCorp(String Corp_id, CorpRequestDto dto) throws Exception {
-        Corp entity = corpRepository.findById(Corp_id).orElseThrow(()->new Exception("존재하지 않는 아이디입니다."));
+    public CorpResponseDto updateCorp(String corp_id, CorpRequestDto dto) throws Exception {
+        Corp entity = corpRepository.findById(corp_id).orElseThrow(()->new Exception("존재하지 않는 아이디입니다."));
         entity.update(dto);
 
-        Long result = welfareRepository.deleteByCorpId(Corp_id);
+        Long result = welfareRepository.deleteByCorpId(corp_id);
         if(result==0) {
             return null;
         }
@@ -118,8 +128,9 @@ public class CorpServiceImpl implements CorpService {
                 welfareList.put(key, list);
             }
         }
+        Long goodSize = corpGoodsRepository.countByCorpId(corp_id);
 
-        return corpEntityToDto(corpRepository.save(entity),welfareList);
+        return corpEntityToDto(corpRepository.save(entity), welfareList,false, goodSize);
     }
 
     @Override
@@ -137,13 +148,10 @@ public class CorpServiceImpl implements CorpService {
             List<Corp> entityList = corpRepository.findByCategory(data);
             for(Corp entity: entityList) {
                 if(limit>9){
-                    break;
+                    return allList;
                 }
                 limit++;
-                allList.add(entityToMiniDto(entity));
-            }
-            if(limit>9){
-                break;
+                allList.add(entityToMiniDto(entity,corpGoodsRepository.countByCorpId(entity.getId())));
             }
         }
         return allList;
@@ -151,14 +159,23 @@ public class CorpServiceImpl implements CorpService {
 
     @Override
     public String updateGoods(GoodsRequestDto dto) throws Exception{
-        Corp entity = corpRepository.findById(dto.getCorp_id()).orElseThrow(()->new Exception("존재하지 않는 corp_id 입니다."));
-
-        if(entity.getUserId().remove(dto.getUser_id())){
-            corpRepository.save(entity);
+        corpRepository.findById(dto.getCorp_id()).orElseThrow(()->new Exception("존재하지 않는 corp_id 입니다."));
+        Optional<CorpGoods> value = corpGoodsRepository.findByCorpIdAndUserId(dto.getCorp_id(),dto.getUser_id());
+        if(value.isPresent()){
+            corpGoodsRepository.deleteByCorpIdAndUserId(dto.getCorp_id(), dto.getUser_id());
             return "좋아요 취소";
         }
-        entity.getUserId().add(dto.getUser_id());
-        corpRepository.save(entity);
+        corpGoodsRepository.save(
+                CorpGoods.builder()
+                        .corp(corpRepository.findById(dto.getCorp_id()).get())
+                        .user(bokjipsUserRepository.findById(dto.getUser_id()).get())
+                        .build()
+        );
         return "좋아요 등록";
+    }
+
+    public void selectGood(String user_id) {
+//        List<Corp> test = corpRepository.selectGoodsList(user_id);
+//        log.info(test);
     }
 }

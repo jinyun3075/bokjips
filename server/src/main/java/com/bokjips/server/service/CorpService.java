@@ -16,7 +16,7 @@ import java.util.UUID;
 public interface CorpService {
     CorpResponseDto insertCorp(CorpRequestDto dto) throws Exception;
 
-    CorpResponseDto selectCorp(String corp_id) throws Exception;
+    CorpResponseDto selectCorp(String corp_id, String user_id) throws Exception;
 
     CorpResponseDto updateCorp(String corp_id, CorpRequestDto dto) throws Exception;
 
@@ -28,6 +28,8 @@ public interface CorpService {
 
     String updateGoods (GoodsRequestDto dto) throws Exception;
 
+    void selectGood(String user_id);
+
     default Corp dtoToCorpEntity(CorpRequestDto dto){
         return Corp.builder()
                 .id(UUID.randomUUID().toString())
@@ -37,17 +39,17 @@ public interface CorpService {
                 .category(dto.getCategory())
                 .stock(dto.isStock())
                 .image(dto.getImage())
-                .userId(new ArrayList<>())
                 .build();
     }
 
-    default CorpResponseDto corpEntityToDto(Corp entity, Map<String, List<WelfareResponseDto>> welfareList) {
+    default CorpResponseDto corpEntityToDto(Corp entity, Map<String, List<WelfareResponseDto>> welfareList, boolean state, Long goodSize) {
         return CorpResponseDto.builder()
                 .corp_id(entity.getId())
                 .career(entity.getCareer())
                 .category(entity.getCategory())
                 .image(entity.getImage())
-                .good(entity.getUserId())
+                .good(goodSize)
+                .goodState(state)
                 .name(entity.getName())
                 .modDate(entity.getModDate())
                 .regDate(entity.getRegDate())
@@ -57,13 +59,13 @@ public interface CorpService {
                 .build();
     }
 
-    default CorpListResponseDto corpPageToDto(Corp entity) {
+    default CorpListResponseDto corpPageToDto(Corp entity, Long goodSize) {
         return CorpListResponseDto.builder()
                 .corp_id(entity.getId())
                 .career(entity.getCareer())
                 .category(entity.getCategory())
                 .image(entity.getImage())
-                .good(entity.getUserId())
+                .good(goodSize)
                 .name(entity.getName())
                 .modDate(entity.getModDate())
                 .regDate(entity.getRegDate())
@@ -82,11 +84,11 @@ public interface CorpService {
                 .build();
     }
 
-    default CorpMiniResponseDto entityToMiniDto(Corp entity) {
+    default CorpMiniResponseDto entityToMiniDto(Corp entity, Long goodSize) {
         return CorpMiniResponseDto.builder()
                 .corp_id(entity.getId())
                 .name(entity.getName())
-                .good((long) entity.getUserId().size())
+                .good(goodSize)
                 .build();
     }
 }

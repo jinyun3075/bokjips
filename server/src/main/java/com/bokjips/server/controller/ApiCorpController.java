@@ -25,9 +25,9 @@ public class ApiCorpController {
         return new ResponseEntity<>(corpService.insertCorp(dto), HttpStatus.OK);
     }
 
-    @GetMapping("/select/{corp_id}")
-    public ResponseEntity<CorpResponseDto> selectCorp(@PathVariable String corp_id) throws Exception{
-        return new ResponseEntity<>(corpService.selectCorp(corp_id),HttpStatus.OK);
+    @GetMapping("/select/{corp_id}/{user_id}")
+    public ResponseEntity<CorpResponseDto> selectCorp(@PathVariable String corp_id, @PathVariable String user_id) throws Exception{
+        return new ResponseEntity<>(corpService.selectCorp(corp_id,user_id),HttpStatus.OK);
     }
 
     @GetMapping("/select")
@@ -53,5 +53,11 @@ public class ApiCorpController {
     @PostMapping("/good")
     public ResponseEntity<String> updateGoods(@RequestBody GoodsRequestDto dto) throws Exception{
         return new ResponseEntity<>(corpService.updateGoods(dto),HttpStatus.OK);
+    }
+
+    @GetMapping("/select/{user_id}")
+    public ResponseEntity<String> selectGoods(@PathVariable String user_id) {
+        corpService.selectGood(user_id);
+        return new ResponseEntity<>("e",HttpStatus.OK);
     }
 }
