@@ -11,6 +11,7 @@
   - [1.4 회사 수정](#회사-수정)
   - [1.5 회사 삭제](#회사-삭제)
   - [1.6 회사 미니 리스트](#회사-미니-리스트)
+  - [1.7 좋아요 기능](#좋아요-기능)
 
 - ### [2 유저](#유저)
   - [2.1 회원가입](#회원가입)
@@ -49,6 +50,7 @@
   - category: Array<String>
   - stock: Boolean
   - good: Number
+  - goodStatus: Boolean
   - image: String
   - welfareList: Object
     - {title}
@@ -63,7 +65,7 @@
 ### 회사 자세히 보기
 
 - api
-  - /corp/select/:corp_id (get)
+  - /corp/select/:corp_id/:user_id (get)
 
 - headers
   - Content-type : "application/json"
@@ -76,6 +78,7 @@
   - category: Array<String>
   - stock: Boolean
   - good: Number
+  - goodStatus: Boolean
   - image: String
   - welfareList: Array
     - {title}
@@ -143,6 +146,7 @@
   - category: Array<String>
   - stock: Boolean
   - good: Number
+  - goodStatus: Boolean
   - image: String
   - welfareList: Array
     - {title}
@@ -188,6 +192,20 @@
     - corp_id : String
     - good: Number
 
+### 좋아요 기능
+
+- api
+  - /corp/good (post)
+
+- headers
+  - Content-type : "application/json"
+
+- req
+  - corp_id: String
+  - user_id: String
+  
+- res
+  - "좋아요 등록, 취소"
   
 ## 유저
 ### 회원가입
@@ -250,10 +268,7 @@
   - comments_id: String
   - title: String
   - content: String
-  - writer:
-    - user_id: String
-    - email: String
-    - name: String
+  - writer: String
   - regdate: Date
   - modDate: Date
 
@@ -271,10 +286,7 @@
       - comments_id: String
       - title: String
       - content: String
-      - writer:
-        - user_id: String
-        - email: String
-        - name: String
+      - writer: String
       - regdate: Date
       - modDate: Date
   - totalPage: Number
