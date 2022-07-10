@@ -7,8 +7,6 @@ import com.bokjips.server.domain.welfare.dto.WelfareResponseDto;
 import com.bokjips.server.domain.welfare.entity.Welfare;
 import com.bokjips.server.util.dto.PageResponseDto;
 
-
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -28,7 +26,7 @@ public interface CorpService {
 
     String updateGoods (GoodsRequestDto dto) throws Exception;
 
-    void selectGood(String user_id);
+    PageResponseDto<CorpListResponseDto,Corp> selectGoodList(String user_id, Integer page, Integer size);
 
     default Corp dtoToCorpEntity(CorpRequestDto dto){
         return Corp.builder()

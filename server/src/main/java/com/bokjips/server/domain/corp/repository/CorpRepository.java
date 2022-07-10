@@ -12,6 +12,6 @@ public interface CorpRepository extends JpaRepository<Corp, String> {
 
     List<Corp> findByCategory(String category);
 
-//    @Query("select a from Corp a where a.goods.user_id = :user")
+//    @Query("select a from Corp a, CorpGoods b where a.id = b.corp_id and b.user_id = :user")
 //    List<Corp> selectGoodsList(@Param("user") String user_id);
 }

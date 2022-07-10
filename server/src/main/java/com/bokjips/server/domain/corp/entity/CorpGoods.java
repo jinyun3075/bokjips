@@ -1,10 +1,7 @@
 package com.bokjips.server.domain.corp.entity;
 
 import com.bokjips.server.domain.user.entity.BokjipsUser;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Generated;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
@@ -14,6 +11,7 @@ import javax.persistence.*;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@Getter
 public class CorpGoods {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

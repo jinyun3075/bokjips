@@ -55,9 +55,8 @@ public class ApiCorpController {
         return new ResponseEntity<>(corpService.updateGoods(dto),HttpStatus.OK);
     }
 
-    @GetMapping("/select/{user_id}")
-    public ResponseEntity<String> selectGoods(@PathVariable String user_id) {
-        corpService.selectGood(user_id);
-        return new ResponseEntity<>("e",HttpStatus.OK);
+    @GetMapping("/select/goodList/{user_id}")
+    public ResponseEntity<PageResponseDto<CorpListResponseDto, Corp>> selectGoods(@PathVariable String user_id, @RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "size", required = false) Integer size) {
+        return new ResponseEntity<>(corpService.selectGoodList(user_id, page, size),HttpStatus.OK);
     }
 }

@@ -17,11 +17,13 @@ import com.bokjips.server.util.module.PageModule;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -174,8 +176,19 @@ public class CorpServiceImpl implements CorpService {
         return "좋아요 등록";
     }
 
-    public void selectGood(String user_id) {
-//        List<Corp> test = corpRepository.selectGoodsList(user_id);
-//        log.info(test);
+    @Override
+    public PageResponseDto<CorpListResponseDto, Corp> selectGoodList(String user_id, Integer page, Integer size) {
+        PageRequestDto pageRequestDto = pageModule.makePage(page,size);
+
+        List<Corp> entityList = corpGoodsRepository.findByUserId(user_id).stream().map(entity->entity.getCorp()).collect(Collectors.toList());
+
+        Page<Corp> pageList = new PageImpl<>(entityList.subList(size*page-size,size*page), pageRequestDto.getPageable(Sort.by("modDate").descending()),entityList.size());
+
+        Function<Corp, CorpListResponseDto> fn = (data -> corpPageToDto(data,corpGoodsRepository.countByCorpId(data.getId())));
+
+
+        PageResponseDto<CorpListResponseDto, Corp> pageResponseDto =new PageResponseDto<>(pageList, fn);
+
+        return pageResponseDto;
     }
 }
