@@ -8,7 +8,7 @@ import java.util.List;
 @Data
 @Builder
 public class CorpMiniRequestDto {
-    String corp_id;
+//    String corp_id;
     List<String> category;
     boolean stock;
 }

@@ -145,16 +145,19 @@ public class CorpServiceImpl implements CorpService {
     @Override
     public List<CorpMiniResponseDto> selectMini(CorpMiniRequestDto dto) throws Exception {
         List<CorpMiniResponseDto> allList = new ArrayList<>();
+        List<Corp> joinList = new ArrayList<>();
         int limit = 0;
         for(String data: dto.getCategory()){
-            List<Corp> entityList = corpRepository.findByCategory(data);
-            for(Corp entity: entityList) {
-                if(limit>9){
-                    return allList;
-                }
-                limit++;
-                allList.add(entityToMiniDto(entity,corpGoodsRepository.countByCorpId(entity.getId())));
+            List<Corp> entityList = corpRepository.findByCategoryAndStock(data, dto.isStock());
+            joinList.addAll(entityList);
+        }
+        Collections.shuffle(joinList);
+        for(Corp entity: joinList) {
+            if(limit>9){
+                return allList;
             }
+            limit++;
+            allList.add(entityToMiniDto(entity,corpGoodsRepository.countByCorpId(entity.getId())));
         }
         return allList;
     }
