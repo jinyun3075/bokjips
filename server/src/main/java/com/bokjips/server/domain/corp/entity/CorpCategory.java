@@ -1,7 +1,9 @@
 package com.bokjips.server.domain.corp.entity;
 
-import com.bokjips.server.domain.user.entity.BokjipsUser;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
@@ -12,16 +14,11 @@ import javax.persistence.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
-public class CorpGoods {
+public class CorpCategory {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id", nullable = false)
     private Long id;
-
-    @ManyToOne(
-            fetch = FetchType.LAZY
-    )
-    @OnDelete(action = OnDeleteAction.CASCADE)
-    private BokjipsUser user;
 
     @ManyToOne(
             fetch = FetchType.LAZY
@@ -29,4 +26,11 @@ public class CorpGoods {
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Corp corp;
 
+    @ManyToOne(
+            fetch = FetchType.LAZY
+    )
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    private CorpGoods corpGoods;
+
+    private String category;
 }

@@ -2,7 +2,9 @@ package com.bokjips.server.service.Impl;
 
 import com.bokjips.server.domain.corp.dto.*;
 import com.bokjips.server.domain.corp.entity.Corp;
+import com.bokjips.server.domain.corp.entity.CorpCategory;
 import com.bokjips.server.domain.corp.entity.CorpGoods;
+import com.bokjips.server.domain.corp.repository.CorpCategoryRepository;
 import com.bokjips.server.domain.corp.repository.CorpGoodsRepository;
 import com.bokjips.server.domain.corp.repository.CorpRepository;
 import com.bokjips.server.domain.user.repository.BokjipsUserRepository;
@@ -35,12 +37,20 @@ public class CorpServiceImpl implements CorpService {
     private final WelfareRepository welfareRepository;
     private final CorpGoodsRepository corpGoodsRepository;
     private final BokjipsUserRepository bokjipsUserRepository;
+    private final CorpCategoryRepository corpCategoryRepository;
 
     @Override
     public CorpResponseDto insertCorp(CorpRequestDto dto) throws Exception {
 
         Corp entity = corpRepository.save(dtoToCorpEntity(dto));
-
+        List<String> categories = new ArrayList<>();
+        for(String category : dto.getCategory()) {
+            corpCategoryRepository.save(CorpCategory.builder()
+                            .category(category)
+                            .corp(entity)
+                    .build());
+            categories.add(category);
+        }
         for (String key : dto.getWelfareList().keySet()) {
             for(WelfareRequestDto welfare: dto.getWelfareList().get(key)){
                 welfareRepository.save(dtoToWelfareEntity(entity, key, welfare));
@@ -58,13 +68,19 @@ public class CorpServiceImpl implements CorpService {
             }
         }
 
-        return corpEntityToDto(entity, welfareList, false, 0l);
+        return corpEntityToDto(entity, welfareList, false, 0l,categories);
     }
 
     @Override
     public CorpResponseDto selectCorp(String corp_id, String user_id) throws Exception {
         Corp entity = corpRepository.findById(corp_id).orElseThrow(()->new Exception("존재하지않는 아이디입니다."));
         List<Welfare> welfareListEntity = welfareRepository.findByCorpId(corp_id);
+        List<CorpCategory> categories = corpCategoryRepository.findByCorpId(corp_id);
+        List<String> categoriesValue = new ArrayList<>();
+        for(CorpCategory category: categories) {
+            categoriesValue.add(category.getCategory());
+        }
+
         Map<String, List<WelfareResponseDto>> welfareList = new HashMap<>();
         for(Welfare w : welfareListEntity) {
             String key = w.getTitle();
@@ -80,18 +96,32 @@ public class CorpServiceImpl implements CorpService {
             state = true;
         }
         Long goodSize = corpGoodsRepository.countByCorpId(corp_id);
-        return corpEntityToDto(entity, welfareList, state,goodSize);
+        return corpEntityToDto(entity, welfareList, state,goodSize, categoriesValue);
     }
 
     @Override
-    public PageResponseDto<CorpListResponseDto, Corp> selectCorpList(Integer page, Integer size) throws Exception {
+    public PageResponseDto<CorpListResponseDto, CorpCategory> selectCorpList(Integer page, Integer size,String keyword) throws Exception {
         PageRequestDto pageRequestDto = pageModule.makePage(page,size);
 
-        Page<Corp> entity = corpRepository.findAll(pageRequestDto.getPageable(Sort.by("modDate").descending()));
+        Page<CorpCategory> entity = null;
+        List<String> categoryValue = new ArrayList<>();
 
 
-        Function<Corp, CorpListResponseDto> fn = (data -> corpPageToDto(data,corpGoodsRepository.countByCorpId(data.getId())));
-        PageResponseDto<CorpListResponseDto, Corp> pageResponseDto =new PageResponseDto<>(entity, fn);
+        if(keyword == null){
+            entity = corpCategoryRepository.findAll(pageRequestDto.getPageable(Sort.by("modDate").descending()));
+
+        }else {
+            String[] keywordList =  keyword.split(",");
+            switch (keywordList.length){
+                case 1:
+                    entity = corpCategoryRepository.findByCategory(keywordList[0],pageRequestDto.getPageable(Sort.by("modDate").descending()));
+                    break;
+                case 2:
+            }
+        }
+
+        Function<CorpCategory, CorpListResponseDto> fn = (data -> corpPageToDto(data,corpGoodsRepository.countByCorpId(data.getCorp().getId()),categoryValue));
+        PageResponseDto<CorpListResponseDto, CorpCategory> pageResponseDto =new PageResponseDto<>(entity, fn);
 
         for(CorpListResponseDto corp : pageResponseDto.dtoList) {
             List<Welfare> welfareListEntity = welfareRepository.findByCorpId(corp.getCorp_id());
@@ -130,9 +160,18 @@ public class CorpServiceImpl implements CorpService {
                 welfareList.put(key, list);
             }
         }
+
+        corpCategoryRepository.deleteByCorpId(corp_id);
+        for(String cate:dto.getCategory()) {
+            corpCategoryRepository.save(CorpCategory.builder()
+                            .corp(entity)
+                            .category(cate)
+                    .build());
+        }
+
         Long goodSize = corpGoodsRepository.countByCorpId(corp_id);
 
-        return corpEntityToDto(corpRepository.save(entity), welfareList,false, goodSize);
+        return corpEntityToDto(corpRepository.save(entity), welfareList,false, goodSize,dto.getCategory());
     }
 
     @Override
@@ -145,19 +184,19 @@ public class CorpServiceImpl implements CorpService {
     @Override
     public List<CorpMiniResponseDto> selectMini(CorpMiniRequestDto dto) throws Exception {
         List<CorpMiniResponseDto> allList = new ArrayList<>();
-        List<Corp> joinList = new ArrayList<>();
+        List<CorpCategory> joinList = new ArrayList<>();
         int limit = 0;
         for(String data: dto.getCategory()){
-            List<Corp> entityList = corpRepository.findByCategoryAndStock(data, dto.isStock());
+            List<CorpCategory> entityList = corpCategoryRepository.findByCategory(data);
             joinList.addAll(entityList);
         }
         Collections.shuffle(joinList);
-        for(Corp entity: joinList) {
+        for(CorpCategory entity: joinList) {
             if(limit>9){
                 return allList;
             }
             limit++;
-            allList.add(entityToMiniDto(entity,corpGoodsRepository.countByCorpId(entity.getId())));
+            allList.add(entityToMiniDto(entity.getCorp(),corpGoodsRepository.countByCorpId(entity.getCorp().getId())));
         }
         return allList;
     }
@@ -180,17 +219,20 @@ public class CorpServiceImpl implements CorpService {
     }
 
     @Override
-    public PageResponseDto<CorpListResponseDto, Corp> selectGoodList(String user_id, Integer page, Integer size) {
+    public PageResponseDto<CorpListResponseDto, CorpCategory> selectGoodList(String user_id, Integer page, Integer size) {
         PageRequestDto pageRequestDto = pageModule.makePage(page,size);
 
-        List<Corp> entityList = corpGoodsRepository.findByUserId(user_id).stream().map(entity->entity.getCorp()).collect(Collectors.toList());
+        Page<CorpCategory> entityList = corpCategoryRepository.findByUserId(user_id,pageRequestDto.getPageable(Sort.by("modDate").descending()));
 
-        Page<Corp> pageList = new PageImpl<>(entityList.subList(size*page-size,size*page), pageRequestDto.getPageable(Sort.by("modDate").descending()),entityList.size());
+        List<String> categories = new ArrayList<>();
 
-        Function<Corp, CorpListResponseDto> fn = (data -> corpPageToDto(data,corpGoodsRepository.countByCorpId(data.getId())));
+        for(CorpCategory cate: entityList) {
+            categories.add(cate.getCategory());
+        }
+        Function<CorpCategory, CorpListResponseDto> fn = (data -> corpPageToDto(data,corpGoodsRepository.countByCorpId(data.getCorp().getId()),categories));
 
 
-        PageResponseDto<CorpListResponseDto, Corp> pageResponseDto =new PageResponseDto<>(pageList, fn);
+        PageResponseDto<CorpListResponseDto, CorpCategory> pageResponseDto =new PageResponseDto<>(entityList, fn);
 
         return pageResponseDto;
     }

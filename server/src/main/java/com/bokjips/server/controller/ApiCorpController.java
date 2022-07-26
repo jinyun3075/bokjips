@@ -2,6 +2,7 @@ package com.bokjips.server.controller;
 
 import com.bokjips.server.domain.corp.dto.*;
 import com.bokjips.server.domain.corp.entity.Corp;
+import com.bokjips.server.domain.corp.entity.CorpCategory;
 import com.bokjips.server.service.CorpService;
 import com.bokjips.server.util.dto.PageResponseDto;
 import lombok.RequiredArgsConstructor;
@@ -31,8 +32,8 @@ public class ApiCorpController {
     }
 
     @GetMapping("/select")
-    public ResponseEntity<PageResponseDto<CorpListResponseDto, Corp>> selectCorpList(@RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "size", required = false) Integer size) throws Exception {
-        return new ResponseEntity<>(corpService.selectCorpList(page,size),HttpStatus.OK);
+    public ResponseEntity<PageResponseDto<CorpListResponseDto, CorpCategory>> selectCorpList(@RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "size", required = false) Integer size, @RequestParam(value = "keyword", required = false) String keyword) throws Exception {
+        return new ResponseEntity<>(corpService.selectCorpList(page,size, keyword),HttpStatus.OK);
     }
 
     @PostMapping("/select/mini")
@@ -56,7 +57,7 @@ public class ApiCorpController {
     }
 
     @GetMapping("/select/goodList/{user_id}")
-    public ResponseEntity<PageResponseDto<CorpListResponseDto, Corp>> selectGoods(@PathVariable String user_id, @RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "size", required = false) Integer size) {
+    public ResponseEntity<PageResponseDto<CorpListResponseDto, CorpCategory>> selectGoods(@PathVariable String user_id, @RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "size", required = false) Integer size) {
         return new ResponseEntity<>(corpService.selectGoodList(user_id, page, size),HttpStatus.OK);
     }
 }

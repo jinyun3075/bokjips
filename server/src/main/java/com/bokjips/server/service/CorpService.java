@@ -2,6 +2,7 @@ package com.bokjips.server.service;
 
 import com.bokjips.server.domain.corp.dto.*;
 import com.bokjips.server.domain.corp.entity.Corp;
+import com.bokjips.server.domain.corp.entity.CorpCategory;
 import com.bokjips.server.domain.welfare.dto.WelfareRequestDto;
 import com.bokjips.server.domain.welfare.dto.WelfareResponseDto;
 import com.bokjips.server.domain.welfare.entity.Welfare;
@@ -20,13 +21,13 @@ public interface CorpService {
 
     String deleteCorp(String corp_id) throws Exception;
 
-    PageResponseDto<CorpListResponseDto,Corp> selectCorpList(Integer page, Integer size) throws Exception;
+    PageResponseDto<CorpListResponseDto, CorpCategory> selectCorpList(Integer page, Integer size, String keyword) throws Exception;
 
     List<CorpMiniResponseDto> selectMini(CorpMiniRequestDto dto) throws Exception;
 
     String updateGoods (GoodsRequestDto dto) throws Exception;
 
-    PageResponseDto<CorpListResponseDto,Corp> selectGoodList(String user_id, Integer page, Integer size);
+    PageResponseDto<CorpListResponseDto,CorpCategory> selectGoodList(String user_id, Integer page, Integer size);
 
     default Corp dtoToCorpEntity(CorpRequestDto dto){
         return Corp.builder()
@@ -34,17 +35,16 @@ public interface CorpService {
                 .name(dto.getName())
                 .site(dto.getSite())
                 .career(dto.getCareer())
-                .category(dto.getCategory())
                 .stock(dto.isStock())
                 .image(dto.getImage())
                 .build();
     }
 
-    default CorpResponseDto corpEntityToDto(Corp entity, Map<String, List<WelfareResponseDto>> welfareList, boolean state, Long goodSize) {
+    default CorpResponseDto corpEntityToDto(Corp entity, Map<String, List<WelfareResponseDto>> welfareList, boolean state, Long goodSize, List<String> category) {
         return CorpResponseDto.builder()
                 .corp_id(entity.getId())
                 .career(entity.getCareer())
-                .category(entity.getCategory())
+                .category(category)
                 .image(entity.getImage())
                 .good(goodSize)
                 .goodState(state)
@@ -57,18 +57,18 @@ public interface CorpService {
                 .build();
     }
 
-    default CorpListResponseDto corpPageToDto(Corp entity, Long goodSize) {
+    default CorpListResponseDto corpPageToDto(CorpCategory entity, Long goodSize,List<String> category) {
         return CorpListResponseDto.builder()
-                .corp_id(entity.getId())
-                .career(entity.getCareer())
-                .category(entity.getCategory())
-                .image(entity.getImage())
+                .corp_id(entity.getCorp().getId())
+                .career(entity.getCorp().getCareer())
+                .image(entity.getCorp().getImage())
                 .good(goodSize)
-                .name(entity.getName())
-                .modDate(entity.getModDate())
-                .regDate(entity.getRegDate())
-                .site(entity.getSite())
-                .stock(entity.isStock())
+                .category(category)
+                .name(entity.getCorp().getName())
+                .modDate(entity.getCorp().getModDate())
+                .regDate(entity.getCorp().getRegDate())
+                .site(entity.getCorp().getSite())
+                .stock(entity.getCorp().isStock())
                 .build();
     }
 
