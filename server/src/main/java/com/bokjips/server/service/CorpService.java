@@ -21,13 +21,13 @@ public interface CorpService {
 
     String deleteCorp(String corp_id) throws Exception;
 
-    PageResponseDto<CorpListResponseDto, CorpCategory> selectCorpList(Integer page, Integer size, String keyword) throws Exception;
+    PageResponseDto<CorpListResponseDto, CorpAndCategoryDto> selectCorpList(Integer page, Integer size, String keyword) throws Exception;
 
     List<CorpMiniResponseDto> selectMini(CorpMiniRequestDto dto) throws Exception;
 
     String updateGoods (GoodsRequestDto dto) throws Exception;
 
-    PageResponseDto<CorpListResponseDto,CorpCategory> selectGoodList(String user_id, Integer page, Integer size);
+    PageResponseDto<CorpListResponseDto,CorpAndCategoryDto> selectGoodList(String user_id, Integer page, Integer size);
 
     default Corp dtoToCorpEntity(CorpRequestDto dto){
         return Corp.builder()
@@ -57,13 +57,13 @@ public interface CorpService {
                 .build();
     }
 
-    default CorpListResponseDto corpPageToDto(CorpCategory entity, Long goodSize,List<String> category) {
+    default CorpListResponseDto corpPageToDto(CorpAndCategoryDto entity, Long goodSize) {
         return CorpListResponseDto.builder()
                 .corp_id(entity.getCorp().getId())
                 .career(entity.getCorp().getCareer())
                 .image(entity.getCorp().getImage())
                 .good(goodSize)
-                .category(category)
+                .category(entity.getCategory())
                 .name(entity.getCorp().getName())
                 .modDate(entity.getCorp().getModDate())
                 .regDate(entity.getCorp().getRegDate())

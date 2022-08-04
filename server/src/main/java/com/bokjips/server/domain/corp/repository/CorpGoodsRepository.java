@@ -17,5 +17,5 @@ public interface CorpGoodsRepository extends JpaRepository<CorpGoods, Long> {
     @Transactional
     Long deleteByCorpIdAndUserId(String corp_id, String user_id);
 
-    Page<CorpGoods> findByUserId(String user_id);
+    List<CorpGoods> findByUserId(String user_id);
 }

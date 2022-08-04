@@ -32,7 +32,7 @@ public class ApiCorpController {
     }
 
     @GetMapping("/select")
-    public ResponseEntity<PageResponseDto<CorpListResponseDto, CorpCategory>> selectCorpList(@RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "size", required = false) Integer size, @RequestParam(value = "keyword", required = false) String keyword) throws Exception {
+    public ResponseEntity<PageResponseDto<CorpListResponseDto, CorpAndCategoryDto>> selectCorpList(@RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "size", required = false) Integer size, @RequestParam(value = "keyword", required = false) String keyword) throws Exception {
         return new ResponseEntity<>(corpService.selectCorpList(page,size, keyword),HttpStatus.OK);
     }
 
@@ -57,7 +57,7 @@ public class ApiCorpController {
     }
 
     @GetMapping("/select/goodList/{user_id}")
-    public ResponseEntity<PageResponseDto<CorpListResponseDto, CorpCategory>> selectGoods(@PathVariable String user_id, @RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "size", required = false) Integer size) {
+    public ResponseEntity<PageResponseDto<CorpListResponseDto, CorpAndCategoryDto>> selectGoods(@PathVariable String user_id, @RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "size", required = false) Integer size) {
         return new ResponseEntity<>(corpService.selectGoodList(user_id, page, size),HttpStatus.OK);
     }
 }

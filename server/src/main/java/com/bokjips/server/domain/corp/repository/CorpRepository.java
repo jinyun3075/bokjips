@@ -12,7 +12,7 @@ import java.util.UUID;
 
 public interface CorpRepository extends JpaRepository<Corp, String> {
 
-    List<Corp> findByCategoryAndStock(String category, boolean stock);
+//    List<Corp> findByCategoryAndStock(String category, boolean stock);
 
 
 
