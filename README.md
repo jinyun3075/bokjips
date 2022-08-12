@@ -21,6 +21,7 @@
   - [3.1 댓글 등록](#댓글-등록)
   - [3.2 댓글 리스트](#댓글-리스트)
   - [3.3 댓글 삭제](#댓글-삭제)
+  
 
 ## 회사
 ### 회사 등록
@@ -92,6 +93,7 @@
 - api
   - /corp/select(get)
   - /corp/select?page=Number&size=Number(get)
+  - /corp/select?page=Number&size=Number&keyword=String,String(get) // ',' 를 기준으로 임시로 2개까지 조건줄 수 있음
 
 - headers
   - Content-type : "application/json"
