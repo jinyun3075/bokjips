@@ -13,8 +13,8 @@ import java.util.UUID;
 public interface CorpRepository extends JpaRepository<Corp, String> {
 
 //    List<Corp> findByCategoryAndStock(String category, boolean stock);
-
-
+    @Query("select a from Corp a where name like %:name%")
+    List<Corp> selectCorpName(@Param("name")String name);
 
 //    @Query("select a from Corp a, CorpGoods b where a.id = b.corp_id and b.user_id = :user")
 //    List<Corp> selectGoodsList(@Param("user") String user_id);

@@ -52,7 +52,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         final CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of("http://www.nepool.co.kr","http://front:3000","http://localhost:3000"));
+        configuration.setAllowedOrigins(List.of("http://www.nepool.co.kr","http://52.79.165.66:3000","http://localhost:3000","http://localhost:3002"));
         configuration.addAllowedHeader("*");
         configuration.addAllowedMethod("*");
         configuration.setAllowCredentials(true);
